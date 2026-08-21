@@ -2,7 +2,7 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugins-blueviolet?logo=anthropic&logoColor=white)
 ![Plugins](https://img.shields.io/badge/plugins-7-blue)
-![Skills](https://img.shields.io/badge/skills-24-green)
+![Skills](https://img.shields.io/badge/skills-23-green)
 ![Commands](https://img.shields.io/badge/commands-6-orange)
 ![Agents](https://img.shields.io/badge/agents-17-red)
 ![Pine tree approved](https://img.shields.io/badge/%F0%9F%8C%B2-approved-2ea44f)
@@ -52,7 +52,7 @@ What earns its place:
 - **A different artefact shape.** `writing-plans` defers to `superpowers:writing-plans` for what a task looks like, then changes one thing: plans are a directory of phase files rather than a single document, because our work spans sessions and a phase boundary is a natural place to stop, commit, and resume.
 - **Stack knowledge the built-in cannot have.** `verifying-python-review-feedback` leaves the review discipline to Superpowers and covers only what a reviewer gets wrong about *our* stack: whether a suggested library survives the Snowflake connector, whether a validation is load-bearing given where the data originates.
 - **Steps the built-in skips.** `executing-plans` keeps a mandatory pre-flight (worktree, green baseline, load the stack skills, scan for parallel work) that Superpowers has no equivalent of, because its own version defers to `subagent-driven-development` instead.
-- **Tooling that is ours.** `uv`, `shucks`, dbt, and Snowflake are not general knowledge.
+- **Tooling that is ours.** `uv`, dbt, and Snowflake are not general knowledge.
 
 What does not earn its place, and gets deleted when found: a restatement of a built-in's process, a second copy of a rationalization table, or guidance that contradicts a built-in without saying so.
 
@@ -65,7 +65,7 @@ Everything this marketplace installs, grouped by plugin. Versions come from each
 ```
 ines-claude-tools/                          marketplace: ines-claude-tools
 │
-├── python-dev                     v1.0.0   10 skills · 7 agents · 3 hooks
+├── python-dev                     v1.0.0   9 skills · 7 agents · 3 hooks
 │   ├── skills/
 │   │   ├── python-best-practices           typing, Pydantic, error handling, match dispatch
 │   │   ├── fixing-type-errors              resolve pyright/ty/mypy errors without suppressions
@@ -75,7 +75,6 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │   │   ├── uv-pyproject                    pyproject.toml and uv workspace configuration
 │   │   ├── fastapi-patterns                routers, Depends, lifespan, HTTPException
 │   │   ├── dbt-python-integration          dbtRunner, manifest.json, run_results.json
-│   │   ├── using-shucks                    Snowflake connection and credential handling
 │   │   └── writing-dagster-pipelines       assets, checks, dbt, scheduling, and deployment on the centralised Dagster platform
 │   ├── agents/
 │   │   ├── any-usage-auditor               every Any annotation, with a concrete replacement
@@ -282,7 +281,7 @@ Hooks are configured in each plugin's `plugin.json` and activate on install. The
 
 **`ruff-before-add.py`** runs on `git add` and lints the Python files being staged. It auto-fixes unused imports and import ordering, and blocks on what it cannot fix. Rules: E402 imports at top, F401 unused imports, F841 unused variables, I001 import sorting, plus function-level and class-level inline imports caught by the `no-inline-imports.yml` ast-grep rule. Requires `uv tool install ruff` and `uv tool install ast-grep-cli`.
 
-**`skill-detector.py`** scans your prompt and injects a reminder to load the matching skill: `pyproject.toml` loads `uv-pyproject`, Snowflake or shucks loads `using-shucks`, dbt commands load `dbt-python-integration`, pytest and fixtures load `python-test-quality`, test audit requests load `test-review`, type safety requests load `type-safety-audit`, Dagster work loads `writing-dagster-pipelines`, and general Python work loads `python-best-practices`.
+**`skill-detector.py`** scans your prompt and injects a reminder to load the matching skill: `pyproject.toml` loads `uv-pyproject`, dbt commands load `dbt-python-integration`, pytest and fixtures load `python-test-quality`, test audit requests load `test-review`, type safety requests load `type-safety-audit`, Dagster work loads `writing-dagster-pipelines`, and general Python work loads `python-best-practices`.
 
 ### git-conventions
 

@@ -18,7 +18,6 @@ Announce: "I'm using the writing-plans skill to create a phased implementation p
 |--------|------|
 | Any Python | `python-dev:python-best-practices` |
 | Tests in the plan | `python-dev:python-test-quality` |
-| Snowflake | `python-dev:using-shucks`, never the raw connector |
 | dbt | `python-dev:dbt-python-integration` |
 | New dependencies or workspace changes | `python-dev:uv-pyproject` |
 | FastAPI | `python-dev:fastapi-patterns` |

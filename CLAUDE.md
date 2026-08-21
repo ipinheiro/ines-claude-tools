@@ -74,7 +74,7 @@ Before writing a skill, check whether [Superpowers](https://code.claude.com/docs
 
 **Defer to the built-in for the general discipline. Add only what is team-specific.** Both plugins load together, so a restated process is wasted context, and a contradicting one makes Claude choose arbitrarily between two sets of instructions.
 
-A layer is justified by a different artefact shape (phased plan directories), stack knowledge the built-in cannot have (Snowflake, dbt, uv, shucks), or a step the built-in skips. It is not justified by wanting the guidance in our own words.
+A layer is justified by a different artefact shape (phased plan directories), stack knowledge the built-in cannot have (Snowflake, dbt, uv), or a step the built-in skips. It is not justified by wanting the guidance in our own words.
 
 When you write a layer, name the skill you defer to in the first paragraph and state what you add. See `workflow-skills:writing-plans` and `code-review-orchestrator:verifying-python-review-feedback`.
 

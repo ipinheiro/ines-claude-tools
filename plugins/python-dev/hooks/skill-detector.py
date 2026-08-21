@@ -3,7 +3,7 @@
 
 Scans user prompts for:
 - File patterns (pyproject.toml, conftest.py, etc.)
-- Keywords (shucks, snowflake, dbt, etc.)
+- Keywords (dbt, dagster, pytest, etc.)
 - Code review requests
 
 Injects system reminders to load appropriate skills.
@@ -42,19 +42,6 @@ SKILL_TRIGGERS = [
             r"\[build-system\]",
         ],
         description="pyproject.toml configuration, uv workspaces, dependency management",
-    ),
-    SkillTrigger(
-        skill_name="using-shucks",
-        plugin="python-dev",
-        patterns=[
-            r"\bshucks\b",
-            r"snowflake.?(connection|config|credentials)",
-            r"SnowflakeConfig",
-            r"from\s+shucks\b",
-            r"import\s+shucks\b",
-            r"sf_config\.toml",
-        ],
-        description="Snowflake connections via shucks library",
     ),
     SkillTrigger(
         skill_name="dbt-python-integration",
