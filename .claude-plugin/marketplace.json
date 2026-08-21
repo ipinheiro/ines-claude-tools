@@ -1,0 +1,79 @@
+{
+  "name": "ines-claude-tools",
+  "description": "Claude Code skills and commands for development workflows",
+  "owner": {
+    "name": "Inês Pinheiro"
+  },
+  "plugins": [
+    {
+      "name": "python-dev",
+      "description": "Python development skills including best practices, FastAPI patterns, testing, type safety auditing, dbt integration, Dagster pipelines",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/python-dev",
+      "category": "development"
+    },
+    {
+      "name": "code-review-orchestrator",
+      "description": "Multi-dimensional code review with specialized agents for Python and TypeScript -- code quality, logic verification, type safety, structure, security, concurrency, and React patterns",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/code-review-orchestrator",
+      "category": "development"
+    },
+    {
+      "name": "workflow-skills",
+      "description": "Development workflow skills for planning, git worktrees, TDD, and finishing branches",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/workflow-skills",
+      "category": "development"
+    },
+    {
+      "name": "productivity-skills",
+      "description": "Productivity skills for parallel agents, design docs, issue search, Confluence documentation, and clear prose",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/productivity-skills",
+      "category": "productivity"
+    },
+    {
+      "name": "dev-commands",
+      "description": "Developer utility commands for codebase analysis, branch reports, and session handoffs",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/dev-commands",
+      "category": "productivity"
+    },
+    {
+      "name": "git-conventions",
+      "description": "Git conventions enforcement: blocks broad git add, validates commit messages, blocks bare rm on tracked files",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/git-conventions",
+      "category": "development"
+    },
+    {
+      "name": "meta-skills",
+      "description": "Skills for creating and maintaining other skills",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/meta-skills",
+      "category": "development"
+    }
+  ]
+}

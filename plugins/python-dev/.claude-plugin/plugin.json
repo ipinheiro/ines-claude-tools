@@ -1,0 +1,44 @@
+{
+  "name": "python-dev",
+  "version": "1.0.0",
+  "description": "Python development skills including best practices, FastAPI patterns, testing, type safety auditing, dbt integration, Dagster pipelines",
+  "author": {
+    "name": "Inês Pinheiro, Kit Thwaite"
+  },
+  "keywords": [
+    "python",
+    "typing",
+    "pydantic",
+    "dbt",
+    "testing",
+    "best-practices",
+    "fastapi",
+    "uv",
+    "type-safety",
+    "dagster"
+  ],
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'input=$(cat); cmd=$(echo \"$input\" | jq -r \".tool_input.command\"); if [[ \"$cmd\" =~ ^python ]]; then uv run \"${CLAUDE_PLUGIN_ROOT}/hooks/python-uv-guard.py\" >&2; exit 2; fi; if [[ \"$cmd\" =~ ^git\\ add ]]; then echo \"$input\" | uv run \"${CLAUDE_PLUGIN_ROOT}/hooks/ruff-before-add.py\"; fi'"
+          }
+        ]
+      }
+    ],
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/skill-detector.py",
+            "timeout": 5
+          }
+        ]
+      }
+    ]
+  }
+}

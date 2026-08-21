@@ -1,0 +1,29 @@
+{
+  "name": "git-conventions",
+  "description": "Git conventions enforcement: blocks broad git add, bare rm on tracked files, and provides atomic commit workflow",
+  "version": "1.0.0",
+  "author": {
+    "name": "Local"
+  },
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_broad_git_add.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/validate_commit_message.py"
+          },
+          {
+            "type": "command",
+            "command": "python3 ${CLAUDE_PLUGIN_ROOT}/hooks/block_bare_rm.py"
+          }
+        ]
+      }
+    ]
+  }
+}

@@ -1,0 +1,46 @@
+## based on https://github.com/github/gitignore/blob/main/Python.gitignore
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+
+# dist
+dist/
+build/
+*.egg-info/
+*.egg
+MANIFEST
+
+# testing and automation
+.tox/
+.nox/
+.coverage
+.pytest_cache/
+
+# logs
+*.log
+*.log.*
+
+# data
+*.pkl
+*.csv
+*.npy
+*.npz
+*.xlsx
+
+# jupyter
+# *.ipynb
+.ipynb_checkpoints/
+
+# environments
+.venv/
+
+# ignore claude code local config, cache and settings
+.claude/
+
+# project-specific
+
+

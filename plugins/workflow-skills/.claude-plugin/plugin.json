@@ -1,0 +1,16 @@
+{
+  "name": "workflow-skills",
+  "version": "1.0.0",
+  "description": "Development workflow skills for code review, git worktrees, TDD",
+  "author": {
+    "name": "Inês Pinheiro"
+  },
+  "keywords": [
+    "workflow",
+    "git",
+    "worktrees",
+    "tdd",
+    "code-review",
+    "plans"
+  ]
+}

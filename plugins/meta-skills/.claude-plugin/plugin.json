@@ -1,0 +1,14 @@
+{
+  "name": "meta-skills",
+  "version": "1.0.0",
+  "description": "Skills for creating and managing other skills",
+  "author": {
+    "name": "Inês Pinheiro"
+  },
+  "keywords": [
+    "meta",
+    "skills",
+    "skill-loader",
+    "writing-skills"
+  ]
+}

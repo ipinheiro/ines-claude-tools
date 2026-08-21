@@ -1,0 +1,12 @@
+id: no-inline-imports
+language: python
+rule:
+  any:
+    - pattern: import $MOD
+    - pattern: from $MOD import $NAMES
+  inside:
+    any:
+      - kind: function_definition
+      - kind: class_definition
+message: "Inline import found. Move imports to the top of the file."
+severity: error

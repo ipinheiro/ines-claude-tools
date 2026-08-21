@@ -1,0 +1,16 @@
+{
+  "name": "dev-commands",
+  "version": "1.0.0",
+  "description": "Developer utility commands for codebase analysis, branch reports, and session handoffs",
+  "author": {
+    "name": "Inês Pinheiro"
+  },
+  "keywords": [
+    "commands",
+    "git",
+    "commit",
+    "debug",
+    "review",
+    "handoff"
+  ]
+}

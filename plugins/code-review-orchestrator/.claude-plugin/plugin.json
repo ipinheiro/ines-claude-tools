@@ -1,0 +1,8 @@
+{
+  "name": "code-review-orchestrator",
+  "description": "Multi-dimensional code review with specialized agents for Python and TypeScript -- code quality, logic verification, type safety, structure, security, concurrency, and React patterns",
+  "version": "1.0.0",
+  "author": {
+    "name": "Ines Pinheiro"
+  }
+}
