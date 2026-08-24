@@ -1,7 +1,7 @@
 {
   "name": "productivity-skills",
-  "version": "1.1.0",
-  "description": "Productivity skills for parallel agents, design docs, Confluence documentation, clear prose, and artifact styling",
+  "version": "2.0.0",
+  "description": "Productivity skills for parallel agents, design docs, Confluence documentation, and clear prose",
   "author": {
     "name": "Inês Pinheiro"
   },
@@ -15,8 +15,6 @@
     "style-guide",
     "writing",
     "prose",
-    "editing",
-    "artifacts",
-    "styling"
+    "editing"
   ]
 }

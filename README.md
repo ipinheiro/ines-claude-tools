@@ -2,7 +2,7 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugins-blueviolet?logo=anthropic&logoColor=white)
 ![Plugins](https://img.shields.io/badge/plugins-8-blue)
-![Skills](https://img.shields.io/badge/skills-25-green)
+![Skills](https://img.shields.io/badge/skills-24-green)
 ![Commands](https://img.shields.io/badge/commands-6-orange)
 ![Agents](https://img.shields.io/badge/agents-17-red)
 ![Pine tree approved](https://img.shields.io/badge/%F0%9F%8C%B2-approved-2ea44f)
@@ -123,13 +123,12 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │       ├── using-git-worktrees             isolated workspaces for feature work
 │       └── finishing-a-development-branch  verify, then merge or open an MR
 │
-├── productivity-skills            v1.1.0   7 skills
+├── productivity-skills            v2.0.0   6 skills
 │   └── skills/
 │       ├── brainstorming                   design before code
 │       ├── design-doc                      structured technical design documents
 │       ├── dispatching-parallel-agents     2+ independent tasks in parallel
 │       ├── github-issue-search             find known issues and workarounds
-│       ├── styling-artifacts               house visual system for HTML artifact pages
 │       ├── writing-clearly                 sentence craft for any prose: docs, commits, posts
 │       └── writing-confluence-docs         house style for the team wiki: grammar, spelling, voice, formatting
 │
