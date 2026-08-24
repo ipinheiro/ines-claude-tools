@@ -1,0 +1,701 @@
+<title>Blurb Lab Verdicts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap">
+<style>
+  :root {
+    --bg: #F5F5F3;
+    --surface: #FFFFFF;
+    --surface-2: #ECECE9;
+    --ink: #151518;
+    --ink-2: #45454D;
+    --muted: #7B7B83;
+    --line: #E2E2DE;
+    --line-2: #CDCDC8;
+    --accent: #2442A8;
+    --accent-ink: #FFFFFF;
+    --accent-soft: #E9EDF9;
+    --accent-wash: #F3F5FC;
+    --warn: #8F5B00;
+    --warn-soft: #F8ECD2;
+    --ok: #2D6A3E;
+    --ok-soft: #E4F0E6;
+    --bad: #8C3B2F;
+    --bad-soft: #F6E4E0;
+    --shadow: 0 1px 2px rgba(20, 20, 24, 0.04), 0 8px 24px -16px rgba(20, 20, 24, 0.18);
+    --radius: 6px;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #111113;
+      --surface: #1A1A1E;
+      --surface-2: #232328;
+      --ink: #EDEDE9;
+      --ink-2: #B9B9BF;
+      --muted: #87878F;
+      --line: #2A2A30;
+      --line-2: #3B3B43;
+      --accent: #93A8F5;
+      --accent-ink: #0E1840;
+      --accent-soft: #1F2852;
+      --accent-wash: #181C30;
+      --warn: #E3B45F;
+      --warn-soft: #3A2D12;
+      --ok: #8FCB9E;
+      --ok-soft: #1B2F21;
+      --bad: #E69C8E;
+      --bad-soft: #3B1F1A;
+      --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #111113;
+    --surface: #1A1A1E;
+    --surface-2: #232328;
+    --ink: #EDEDE9;
+    --ink-2: #B9B9BF;
+    --muted: #87878F;
+    --line: #2A2A30;
+    --line-2: #3B3B43;
+    --accent: #93A8F5;
+    --accent-ink: #0E1840;
+    --accent-soft: #1F2852;
+    --accent-wash: #181C30;
+    --warn: #E3B45F;
+    --warn-soft: #3A2D12;
+    --ok: #8FCB9E;
+    --ok-soft: #1B2F21;
+    --bad: #E69C8E;
+    --bad-soft: #3B1F1A;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: Roboto, "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "kern";
+  }
+  button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+  button:focus-visible, input:focus-visible, a:focus-visible, [tabindex]:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  p { margin: 0; }
+  p + p { margin-top: 0.8em; }
+  strong { font-weight: 500; }
+  h1, h2, h3, h4 { margin: 0; font-weight: 500; text-wrap: balance; }
+
+  .eyebrow {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  .num { font-variant-numeric: tabular-nums; }
+
+  /* ---------- top bar ---------- */
+  .top {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 24px;
+    height: 56px;
+    padding: 0 24px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+  }
+  .brand { display: flex; align-items: baseline; gap: 10px; }
+  .brand-name { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
+  .brand-sub { font-size: 12px; color: var(--muted); }
+  .tabs { display: flex; gap: 4px; }
+  .tab {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--ink-2);
+    transition: background 120ms ease, color 120ms ease;
+  }
+  .tab:hover { background: var(--surface-2); }
+  .tab[aria-selected="true"] { background: var(--ink); color: var(--bg); }
+  .tab .count { margin-left: 6px; font-weight: 400; opacity: 0.65; }
+  .runmeta { justify-self: end; font-size: 12px; color: var(--muted); display: flex; gap: 14px; white-space: nowrap; }
+  .runmeta b { font-weight: 500; color: var(--ink-2); }
+
+  /* ---------- views ---------- */
+  .view { display: none; }
+  .view.is-active { display: block; }
+
+  /* ---------- split layout ---------- */
+  .split {
+    display: grid;
+    grid-template-columns: 300px minmax(0, 1fr);
+    min-height: calc(100vh - 56px);
+  }
+  .list {
+    position: sticky;
+    top: 56px;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    border-right: 1px solid var(--line);
+    background: var(--surface);
+  }
+  .list-head { position: sticky; top: 0; z-index: 1; background: var(--surface); padding: 14px 14px 10px; border-bottom: 1px solid var(--line); }
+  .search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1px solid var(--line-2);
+    border-radius: var(--radius);
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 13px;
+  }
+  .search::placeholder { color: var(--muted); }
+  .list-hint { margin-top: 8px; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; }
+  .book-list { list-style: none; margin: 0; padding: 6px 0 24px; }
+  .book-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 12px;
+    align-items: center;
+    width: 100%;
+    padding: 10px 14px;
+    text-align: left;
+    border-left: 2px solid transparent;
+    transition: background 100ms ease;
+  }
+  .book-item:hover { background: var(--bg); }
+  .book-item[aria-current="true"] { background: var(--accent-wash); border-left-color: var(--accent); }
+  .book-item .t { display: block; font-size: 14px; font-weight: 500; line-height: 1.3; }
+  .book-item .a { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .slots { display: inline-flex; gap: 3px; }
+  .slot { width: 9px; height: 9px; border-radius: 2px; background: var(--line-2); }
+  .slot.is-win { background: var(--accent); }
+  .slot.is-win.is-bar { background: var(--warn); }
+  .list-empty { padding: 24px 14px; color: var(--muted); font-size: 13px; }
+
+  /* ---------- detail ---------- */
+  .detail { padding: 32px 40px 80px; max-width: 1480px; }
+  .book-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+  .book-title { font-size: 30px; line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; }
+  .book-author { margin-top: 4px; font-size: 16px; color: var(--ink-2); font-weight: 300; }
+  .book-ids { margin-top: 10px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; max-width: 520px; justify-content: flex-end; }
+  .chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink-2); background: var(--surface); }
+  .chip.tone { border-style: dashed; }
+
+  .verdict-panel {
+    display: grid;
+    grid-template-columns: 220px minmax(0, 1fr);
+    gap: 32px;
+    padding: 28px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .verdict-winner { display: flex; flex-direction: column; gap: 6px; }
+  .verdict-winner .big { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; color: var(--accent); }
+  .verdict-winner .angle { font-size: 14px; color: var(--ink-2); }
+  .verdict-rationale { max-width: 72ch; font-size: 15px; line-height: 1.6; color: var(--ink); }
+  .verdict-rationale .eyebrow { display: block; margin-bottom: 8px; }
+  .bar-flag {
+    display: inline-flex; align-items: center; gap: 8px;
+    margin-top: 8px; padding: 6px 10px;
+    border-radius: var(--radius);
+    background: var(--warn-soft); color: var(--warn);
+    font-size: 12px; font-weight: 500; line-height: 1.3;
+  }
+  .bar-flag::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; flex: none; }
+
+  .variants { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; padding: 28px 0; }
+  .variant {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+  }
+  .variant.is-winner { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow); }
+  .variant-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
+  .variant-id { display: flex; flex-direction: column; gap: 3px; }
+  .variant-id .slot-name { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+  .variant.is-winner .slot-name { color: var(--accent); }
+  .variant-id .angle { font-size: 15px; font-weight: 500; letter-spacing: -0.005em; }
+  .win-tag { flex: none; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; border-radius: 3px; background: var(--accent); color: var(--accent-ink); }
+  .copy { padding: 20px 20px 22px; font-size: 15px; line-height: 1.6; max-width: 62ch; }
+  .copy strong { font-weight: 700; }
+  .copy p + p { margin-top: 0.9em; }
+  .dup-note { margin: 0 20px 12px; font-size: 12px; color: var(--warn); }
+  .judge-note { margin-top: auto; padding: 14px 20px 16px; background: var(--surface-2); border-top: 1px solid var(--line); font-size: 13px; line-height: 1.55; color: var(--ink-2); border-radius: 0 0 var(--radius) var(--radius); }
+  .judge-note-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; margin-bottom: 6px; }
+  .judge-note-head .eyebrow { white-space: nowrap; }
+  .verdict-chip { display: inline-flex; align-items: center; gap: 6px; line-height: 1.4; text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; padding: 2px 8px; border-radius: 999px; }
+  .verdict-chip::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
+  .verdict-chip.survives { color: var(--ok); background: var(--ok-soft); }
+  .verdict-chip.eliminated { color: var(--bad); background: var(--bad-soft); }
+  .verdict-chip.unclear { color: var(--muted); background: var(--surface); border: 1px solid var(--line-2); }
+  .variant-meta { display: flex; gap: 14px; padding: 0 20px 14px; font-size: 11px; color: var(--muted); }
+  .variant.is-winner .variant-meta { }
+
+  /* ---------- folds ---------- */
+  .folds { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+  details.fold { border-bottom: 1px solid var(--line); }
+  details.fold > summary {
+    list-style: none;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 18px 0;
+    cursor: pointer;
+    font-size: 15px; font-weight: 500;
+  }
+  details.fold > summary::-webkit-details-marker { display: none; }
+  details.fold > summary .sum-right { font-size: 12px; font-weight: 400; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+  details.fold > summary .sum-right::after { content: "+"; font-size: 18px; line-height: 1; color: var(--muted); width: 14px; text-align: center; }
+  details.fold[open] > summary .sum-right::after { content: "–"; }
+  .fold-body { padding: 4px 0 28px; }
+  .ctx-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px 48px; }
+  .ctx-block + .ctx-block { margin-top: 22px; }
+  .ctx-block .eyebrow { display: block; margin-bottom: 8px; }
+  .ctx-block p, .ctx-block li { font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+  .ctx-block ul { margin: 0; padding-left: 18px; }
+  .ctx-block li + li { margin-top: 6px; }
+  .synopsis { max-width: 72ch; }
+  .exemplars { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+  .exemplar { padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .exemplar .ex-title { font-size: 15px; font-weight: 500; }
+  .exemplar .ex-meta { font-size: 12px; color: var(--muted); margin: 2px 0 12px; }
+  .exemplar .ex-copy { font-size: 13px; line-height: 1.55; color: var(--ink-2); max-height: 340px; overflow-y: auto; padding-right: 6px; }
+  .exemplar .ex-copy strong { font-weight: 700; color: var(--ink); }
+  .kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px 32px; }
+  .kv div { font-size: 13px; }
+  .kv .eyebrow { display: block; margin-bottom: 3px; }
+  .kv .v { color: var(--ink); word-break: break-all; }
+
+  /* ---------- overview ---------- */
+  .overview { max-width: 1180px; margin: 0 auto; padding: 40px 40px 96px; }
+  .ov-lead { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px 64px; align-items: start; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
+  .hero-num { font-size: 64px; font-weight: 300; line-height: 1; letter-spacing: -0.03em; }
+  .hero-num small { font-size: 24px; font-weight: 300; color: var(--muted); letter-spacing: -0.01em; margin-left: 6px; }
+  .hero-label { margin-top: 10px; font-size: 16px; color: var(--ink-2); max-width: 40ch; }
+  .reading { font-size: 15px; line-height: 1.65; color: var(--ink); max-width: 64ch; }
+  .reading p + p { margin-top: 0.9em; }
+  .stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-top: 28px; }
+  .stat { padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .stat .v { font-size: 26px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; }
+  .stat .l { margin-top: 4px; font-size: 12px; color: var(--muted); }
+  .charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; padding: 36px 0; }
+  .chart { padding: 20px 22px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+  .chart h3 { font-size: 15px; font-weight: 500; }
+  .chart .sub { margin: 3px 0 16px; font-size: 12px; color: var(--muted); }
+  .bars { display: flex; flex-direction: column; gap: 10px; position: relative; }
+  .bar-row { display: grid; grid-template-columns: 60px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 13px; }
+  .bar-row .k, .rate-row .k { color: var(--ink-2); }
+  .bar-track { display: block; position: relative; height: 18px; }
+  .bar-fill { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 0 4px 4px 0; transition: width 400ms ease; }
+  .bar-fill.muted { background: var(--line-2); }
+  .bar-fill.warn { background: var(--warn); }
+  .bar-row .v { color: var(--ink); text-align: left; }
+  .bar-row .v small { color: var(--muted); margin-left: 4px; }
+  .expect { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 1px solid var(--ink-2); pointer-events: none; }
+  .expect-label { position: absolute; bottom: -18px; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; }
+  .bars.has-expect { padding-bottom: 18px; }
+  .expect-wrap { position: absolute; left: 72px; right: 68px; top: 0; bottom: 18px; pointer-events: none; }
+  .rate-row { display: grid; grid-template-columns: 60px minmax(0, 1fr) 96px; align-items: center; gap: 12px; font-size: 13px; }
+  .rate-row .v { color: var(--ink); }
+  .rate-row .v small { color: var(--muted); margin-left: 4px; }
+
+  .ov-table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+  table.ov-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .ov-table th { text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+  .ov-table td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+  .ov-table tr:last-child td { border-bottom: 0; }
+  .ov-table tr:hover td { background: var(--accent-wash); }
+  .ov-table .t { font-weight: 500; }
+  .ov-table .a { color: var(--muted); font-size: 12px; }
+  .ov-table button.link { color: var(--ink); text-align: left; }
+  .ov-table button.link:hover { color: var(--accent); }
+  .mini-verdicts { display: inline-flex; gap: 4px; }
+  .mv { width: 10px; height: 10px; border-radius: 50%; border: 1px solid transparent; }
+  .mv.survives { background: var(--ok); }
+  .mv.eliminated { background: var(--bad-soft); border-color: var(--bad); }
+  .mv.unclear { background: transparent; border-color: var(--line-2); }
+  .mv.is-win { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--accent); }
+  .legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 0 0 12px; font-size: 12px; color: var(--muted); align-items: center; }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .section-title { font-size: 18px; font-weight: 500; margin: 8px 0 4px; }
+  .section-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+
+  @media (max-width: 1100px) {
+    .top { grid-template-columns: auto 1fr; height: auto; padding: 10px 16px; gap: 12px; }
+    .runmeta { display: none; }
+    .split { grid-template-columns: 1fr; }
+    .list { position: static; height: auto; max-height: 40vh; border-right: 0; border-bottom: 1px solid var(--line); }
+    .detail { padding: 24px 20px 64px; }
+    .verdict-panel, .ctx-grid, .ov-lead { grid-template-columns: 1fr; }
+    .chips { justify-content: flex-start; }
+    .overview { padding: 28px 20px 72px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { transition: none !important; }
+  }
+</style>
+
+<header class="top">
+  <div class="brand">
+    <span class="brand-name">Blurb Lab Verdicts</span>
+    <span class="brand-sub" id="brand-sub"></span>
+  </div>
+  <nav class="tabs" role="tablist" aria-label="Sections">
+    <button class="tab" role="tab" data-tab="overview" aria-selected="false">Overview</button>
+    <button class="tab" role="tab" data-tab="fiction" aria-selected="false">Fiction<span class="count num" id="count-fiction"></span></button>
+    <button class="tab" role="tab" data-tab="nonfiction" aria-selected="false">Non-fiction<span class="count num" id="count-nonfiction"></span></button>
+  </nav>
+  <div class="runmeta" id="runmeta"></div>
+</header>
+
+<main>
+  <section class="view" id="view-overview" role="tabpanel">
+    <div class="overview" id="overview-panel"></div>
+  </section>
+  <section class="view" id="view-books" role="tabpanel">
+    <div class="split">
+      <aside class="list">
+        <div class="list-head">
+          <input class="search" id="search" type="search" placeholder="Search title, author or ISBN" aria-label="Search books" autocomplete="off">
+          <div class="list-hint"><span id="list-count"></span><span>↑ ↓ to move</span></div>
+        </div>
+        <ul class="book-list" id="book-list"></ul>
+      </aside>
+      <article class="detail" id="detail"></article>
+    </div>
+  </section>
+</main>
+
+<script id="blurb-data" type="application/json">{"generated_at": "2026-08-20T10:04", "run_files": 3, "books": [{"isbn": "9781807847647", "work_id": 487176, "title": "A Note from the Publisher", "author": null, "genre": "fiction", "run_id": "d3131cff-8df3-4078-8c90-baa3f0fb4522", "run_time": "2026-08-20T09:43", "writer_model": "gpt-5.6-terra", "judge_model": "sonnet", "judge_model_id": "arn:aws:bedrock:us-east-1:651818016290:application-inference-profile/77s90iv36jn5", "n_variants": 3, "angle_hints": [], "status": "ok", "error": null, "judge_error": null, "winner_index": 0, "winner_angle": "final letter returns", "rationale": "Candidate 0 wins because it anchors the whole pitch in one strange, concrete image — a theatrical performance briefly reshaping a room of starving prisoners — which is the kind of specific, slightly odd detail the distinctiveness bar demands, and no other candidate offers an equivalent. It also opens strongest, naming Danny and the fifty-year silence in its very first clause, giving an immediate, particular hook rather than the more generic \"death notice/legacy/letter\" openings of 1 and 2. The closest runner-up, candidate 2, has a lovely paradoxical line (\"a place built to deny it\") but never gives the reader one hard image to hold onto, which is why it falls short of the memorability test that candidate 0 clears.", "all_below_bar": false, "variants": [{"index": 0, "angle": "final letter returns", "html": "<p>Fifty years after Danny vanishes from his life, an old soldier receives news of his death: a small legacy, and a final letter. The envelope tears open a silence he has spent half a century learning to live inside.</p><p>It carries him back to North Africa and the prison camps that follow, where hunger governs the day and a theatrical performance can briefly change the shape of a room. There, Danny becomes the person he cannot leave behind. Liberation comes, then separation, and a promise that fails to hold. Now the old man sits with Danny’s bequest before him, facing the life he carried forward and the love he left unanswered.</p>", "words": 111, "note_label": null, "note": "Survives screen; strongest quality is the specific, slightly strange image of \"a theatrical performance can briefly change the shape of a room\" — a concrete, memorable detail traceable to the synopsis; weakest quality is a slightly dense final sentence packing three beats (liberation/separation/promise) into one clause.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2701, "output_tokens": 441, "duration_ms": 12853}, {"index": 1, "angle": "legacy letter", "html": "<p><strong>Fifty years of silence ends with a death notice, a small legacy and a letter that has waited too long.</strong></p><p>An old soldier opens the package left by Danny, the man he knew in the prisoner-of-war camps of North Africa. The paper pulls him back through hunger, illness and the makeshift lives men build behind wire, to the attachment that came to govern everything he thought he could survive. Liberation brought a promise to meet again; the years that followed left it broken.</p><p>Now Danny’s final words sit in his hands, carrying the weight of a life deferred. As the past closes in, he must face the love he left behind and the damage silence has done.</p>", "words": 117, "note_label": null, "note": "Survives screen; strongest quality is the plain, unadorned present-tense close (\"Now Danny's final words sit in his hands\"); weakest quality is reliance on generic emotional phrasing (\"the weight of a life deferred,\" \"the damage silence has done\") that could sit on many war-romance jackets without a single distinguishing image.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2701, "output_tokens": 256, "duration_ms": 7919}, {"index": 2, "angle": "letter from the past", "html": "<p><strong>Fifty years after the war, a letter arrives from a man who has died.</strong></p><p>It carries a small legacy, and with it the name Danny: a name the old soldier has spent half a century trying to live beyond. The package draws him back to North Africa, to capture and the long hunger of the prison camps, where survival has its own bargains and love takes hold in a place built to deny it.</p><p>Danny’s final letter waits to be read. So does the promise the two men make when liberation comes, and the silence that follows them home.</p>", "words": 99, "note_label": null, "note": "Survives screen; strongest quality is the paradoxical, lyrical line \"love takes hold in a place built to deny it\"; weakest quality is that Danny's name and the camp detail are both handled abstractly, leaving no one concrete, strange image for a reader to carry away.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2701, "output_tokens": 228, "duration_ms": 8158}], "context": {"synopsis": "A publisher's note summarizes Tatamkhulu Afrika's life and the origins of Bitter Eden. The narrative then shifts to a first-person elderly narrator who receives news that a man from his wartime past has died and left him a small legacy after fifty years of silence. Prompted by the letter, he recalls being captured in North Africa during World War II, enduring POW camps under German and Italian control, and forming first an uneasy bond with Douglas Summerfield and later a deeper, fraught attachment to Danny. The narrator remembers deprivation, camp economies, theatrical performances, illness, cruelty, liberation, separation, and a failed promise to reunite with Danny after the war. In the present, rereading Danny's final letter forces him to confront regret, guilt, and unresolved love as he opens the package Danny left him.", "genres": ["literary fiction", "war novel", "historical fiction", "semi-autobiographical fiction"], "themes": ["World War II", "POW camp", "war captivity", "memory", "letters", "legacy"], "tone": ["melancholic", "introspective", "lyrical", "harrowing"], "speech_register": "literary, poetic, informal at times, with colloquial and vulgar expressions", "key_points": ["framing narrative through letters", "wartime doomed romance", "old soldier haunted by the past", "deathbed letter", "forbidden love", "Narrative arc: Frame narrative of receipt of a death notice and legacy leading into an extended wartime recollection; the wartime section moves from capture and imprisonment through shifting relationships, survival ordeals, emotional awakening, liberation, separation, and tragic non-reunion; the frame returns to unresolved grief and anticipation as the narrator opens the final bequest."]}, "exemplars": [{"title": "The Bat", "author": "Jo Nesbo", "imprint": "Vintage", "division": "Vintage", "html": "<p><strong>**DETECTIVE HOLE IS SOON TO BE A MAJOR NETFLIX SERIES**</p><p>Discover the addictive first book in the bestselling Harry Hole series.</strong></p><p><strong>&#x27;A stunning opening to the series&#x27; <em>Sunday Times</em></strong></p><p><strong>Harry is out of his depth.</strong></p><p>Detective Harry Hole is meant to keep out of trouble. A young Norwegian girl taking a gap year in Sydney has been murdered, and Harry has been sent to Australia to assist in any way he can.</p><p><strong>He&#x27;s not supposed to get too involved.</strong></p><p>When the team unearths a string of unsolved murders and disappearances, nothing will stop Harry from finding out the truth. The hunt for a serial killer is on, but the murderer will talk only to Harry.</p><p><strong>He might be the next victim.</strong></p><p><strong>*JO NESBO HAS SOLD OVER 60 MILLION BOOKS WORLDWIDE*</strong></p><p>Jo Nesbo, Number 1<em> Sunday Times </em>bestseller, January 2024</p>"}, {"title": "Life Out of Order", "author": "Audrey Niffenegger", "imprint": "Jonathan Cape", "division": "Vintage", "html": "<p><strong>Two great loves. A world in chaos. And a life that never lands in order. Discover the long-awaited sequel to the bestselling phenomenon, <em>The Time Traveler’s Wife</em>.</strong></p><p>Alba DeTamble is a time traveler, slipping unpredictably through decades like her father before her. But the hardest thing she carries isn’t the burden of futures she can’t understand, or pasts she cannot change – it’s a secret: she is in love with two different people.</p><p>Each of them offers a different life. Zach lives in the present and can’t follow her when she disappears. Oliver can travel through time, just like she can.</p><p>As Alba careens from time to time, moving from the riot-torn Chicago streets of her present to the eerie, timeless Yellow House, and into the digital corridors of the Museum of Lost Souls and a flooded future London, she must face a question she can no longer avoid: how is it possible to love, and live a meaningful life, in an increasingly troubled, fractured world?</p><p><strong>Intimate and </strong><strong>expansive, <em>Life Out of Order</em> is a kaleidoscopic story of love, resilience and hope when time is running out.</strong></p>"}, {"title": "Three Days in June", "author": "Anne Tyler", "imprint": "Vintage", "division": "Vintage", "html": "<p><strong>***The <em>Sunday Times </em>bestseller***</strong></p><p>‘Just relishable. Thank God for the balm of good writing’ <strong>NIGELLA LAWSON</strong><br>‘A wise, wonderful book’ <strong><em>OBSERVER</em><br>&#x27;</strong>Razor sharp on family, love and marriage&#x27; <strong>DAVID NICHOLLS</strong><br><strong>&#x27;</strong>I devoured it in one long lazy afternoon - I laughed and cried&#x27; <strong>VICTORIA HISLOP</strong></p><p><strong>Weddings aren&#x27;t just about the happy couple…</strong> <strong>A funny, touching, hopeful story of love, marriage and second chances </strong></p><p>It’s the day before her daughter’s wedding and things are not going well for Gail Baines.</p><p>First thing, she loses her job (or quits, depending who you ask). Then her ex-husband Max turns up at her door looking for somewhere to stay. He doesn’t even have a suit. Instead, he’s brought memories – and a cat looking for a new home.</p><p>Just as Gail is wondering what’s next, their daughter Debbie discovers her groom has been keeping a secret which could throw the whole wedding into question…</p><p>‘She is and always will be my favourite author’ <strong>LIANE MORIARTY</strong></p><p>&#x27;If Anne Tyler isn’t the best writer in the world, who is?&#x27;<strong> BBC R4 <em>WOMAN&#x27;S HOUR</em></strong></p><p>‘She knows all the secrets of the human heart’ <strong>MONICA ALI</strong></p><p>‘My favourite writer’ <strong>NICK HORNBY</strong></p><p>&#x27;Anne Tyler really is the best&#x27; <strong>GRAHAM NORTON</strong></p><p>&#x27;Our greatest chronicler of family life&#x27; <strong><em>DAILY MAIL</em></strong></p><p>&#x27;Nobody does it better&#x27; <em><strong>VOGUE</strong></em></p>"}], "tokens": {"writer_in": 8103, "writer_out": 925, "judge_in": 3288, "judge_out": 10438}, "duration_ms": 115639, "file": "9781807847647/blurbs_d3131cff-8df3-4078-8c90-baa3f0fb4522.json"}, {"isbn": "9781529932287", "work_id": 461695, "title": "Always on My Mind", "author": "Carys Green", "genre": "fiction", "run_id": "30eb4b24-4cb8-4e01-ac07-5b5842d5cf3e", "run_time": "2026-08-20T09:23", "writer_model": "gpt-5.6-terra", "judge_model": "sonnet", "judge_model_id": "arn:aws:bedrock:us-east-1:651818016290:application-inference-profile/77s90iv36jn5", "n_variants": 3, "angle_hints": [], "status": "ok", "error": null, "judge_error": null, "winner_index": 0, "winner_angle": "marriage without privacy", "rationale": "Blurb 0 wins on hook and craft: its opening line states the premise's strangeness directly and plainly, and the detail of Mandie Simone naming the mute function gives the copy one odd, specific, memorable image — a reader would still recall \"the mute function\" an hour later. Its closest rival, blurb 2, has an equally bold detail (the teenage abortion) but opens with a generic line (\"a marriage with nowhere left to hide\") that could belong to any domestic thriller, costing it on the hook criterion, which outranks distinctiveness of any single mid-blurb detail. Blurb 1 was eliminated outright for anaphora in \"Their thoughts will be shared. Their silences will be gone.\"", "all_below_bar": false, "variants": [{"index": 0, "angle": "marriage without privacy", "html": "<p><strong>Anna Weston can hear her husband think.</strong></p><p>Unity calls it the Executive Package: a chip that links two minds, sold as a way to bring a marriage closer. Anna agrees because she wants Elijah back within reach. Then his thoughts begin arriving without warning, threaded through her own memories, fears and guilt. Every silence in their home acquires a second meaning.</p><p>There is a mute function, Mandie Simone tells her. There are things Elijah has not said. As the connection starts to fail, Anna must hold on to the one place she thought was still hers: her own mind.</p>", "words": 99, "note_label": "Survives screen", "note": "concrete premise, plain sentences, no listing violation; strongest quality: the named-character detail (\"Mandie Simone\") gives a slightly strange, specific hook; weakest quality: closing line (\"her own mind\") edges toward a neat thematic bow.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2796, "output_tokens": 262, "duration_ms": 7393}, {"index": 1, "angle": "intimacy becomes surveillance", "html": "<p><strong>Anna Weston wants her husband to hear her.</strong></p><p>When Unity offers the Executive Package, a chip that links married minds, Anna hopes the connection will draw her and Elijah back together. Their thoughts will be shared. Their silences will be gone. Unity calls it OneMind.</p><p>Then Anna’s private fears begin arriving in Elijah’s head before she can swallow them down. Old memories press close: university, an affair, the death of Oscar at Kavos. As the chip turns every room into a place with no door, Anna learns there may be a mute function—and that Elijah has kept far more from her than she has ever imagined. Their marriage becomes a house with one exit, and Anna must decide what privacy is worth when the person who claims to love her is already inside her mind.</p>", "words": 135, "note_label": "Eliminated", "note": "\"Their thoughts will be shared. Their silences will be gone.\" is anaphora (parallel \"Their X will be Y\" construction), which the screen explicitly bans; strongest quality otherwise was the tightest causal chain from hope to entrapment; weakest quality: the \"house with one exit\" / \"already inside her mind\" close pushes into overwrought metaphor.", "verdict": "eliminated", "duplicate_of": null, "error": null, "input_tokens": 2796, "output_tokens": 302, "duration_ms": 7258}, {"index": 2, "angle": "intimacy becomes surveillance", "html": "<p><strong>Anna Weston wants a marriage with nowhere left to hide.</strong></p><p>Unity’s Executive Package promises exactly that. A chip links Anna’s mind to her husband Elijah’s, letting them hear each other’s thoughts. For a while, the closeness feels like a cure for all the silences between them. Then stray memories begin to surface: an affair, a death at Kavos, and the grief Anna has carried since a teenage abortion.</p><p>Elijah hears every fear she tries to swallow. Anna starts to wonder which thoughts are hers alone, and why Unity has given OneMind a mute function. Inside their locked house, intimacy becomes a kind of custody, and the past is no longer content to stay buried.</p>", "words": 114, "note_label": "Survives screen", "note": "no banned rhetorical devices found; strongest quality: the abortion detail is bold and emotionally specific; weakest quality: opening line (\"marriage with nowhere left to hide\") is generic domestic-thriller language that could sit on any cover in the genre.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2796, "output_tokens": 370, "duration_ms": 8880}], "context": {"synopsis": "Set in the near future, this novel is a first-person psychological domestic thriller focused on Anna Weston, a painter and homemaker whose marriage to Elijah Weston is altered by Unity, a clinic and technology provider that offers the Executive Package, a brain-linking procedure using a chip. The chip lets partners hear each other’s thoughts, and the branded name OneMind appears in the company’s promotional material. As Anna’s memories, fears, and guilt collide with the new mental connection, the story moves between present-day marital collapse and flashbacks to university life, an affair, a concealed death, and a reproductive crisis.\n\nAnna initially accepts the procedure in the hope that it will strengthen her marriage, but the chip soon becomes a source of surveillance and coercion. She learns that trauma from a teenage abortion left her unable to carry a pregnancy to term, then discovers she is pregnant again. As the chip malfunctions, Mandie Simone tells her about the mute function, and Anna begins to suspect Elijah has been hiding information from her. A hidden affair with Gavin, the death of Oscar at Kavos, and Elijah’s violent role in that death gradually emerge, leading to a locked-house confrontation in which Anna pushes Elijah down the stairs and he falls into a coma. After Unity mutes her chip and confirms the pregnancy, Anna tells the muted Elijah in hospital that their marriage is over and leaves determined to raise the baby alone.", "genres": ["science-fiction", "literary fiction", "psychological fiction", "domestic drama"], "themes": ["marriage", "anxiety", "technology", "guilt", "secrecy", "surveillance"], "tone": ["tense", "melancholic", "anxious", "intimate"], "speech_register": "contemporary informal", "key_points": ["marital tension", "love triangle", "marital strain", "toxic marriage", "jealous spouse", "Narrative arc: A first-person psychological domestic thriller with an initial seduction-by-intimacy structure that becomes a locked-house crisis and moral unravelling. The arc moves from marital strain and invasive technology into revelation, violence, and a final separation in which Anna reclaims privacy at the cost of her marriage."]}, "exemplars": [{"title": "Life Out of Order", "author": "Audrey Niffenegger", "imprint": "Jonathan Cape", "division": "Vintage", "html": "<p><strong>Two great loves. A world in chaos. And a life that never lands in order. Discover the long-awaited sequel to the bestselling phenomenon, <em>The Time Traveler’s Wife</em>.</strong></p><p>Alba DeTamble is a time traveler, slipping unpredictably through decades like her father before her. But the hardest thing she carries isn’t the burden of futures she can’t understand, or pasts she cannot change – it’s a secret: she is in love with two different people.</p><p>Each of them offers a different life. Zach lives in the present and can’t follow her when she disappears. Oliver can travel through time, just like she can.</p><p>As Alba careens from time to time, moving from the riot-torn Chicago streets of her present to the eerie, timeless Yellow House, and into the digital corridors of the Museum of Lost Souls and a flooded future London, she must face a question she can no longer avoid: how is it possible to love, and live a meaningful life, in an increasingly troubled, fractured world?</p><p><strong>Intimate and </strong><strong>expansive, <em>Life Out of Order</em> is a kaleidoscopic story of love, resilience and hope when time is running out.</strong></p>"}, {"title": "Three Days in June", "author": "Anne Tyler", "imprint": "Vintage", "division": "Vintage", "html": "<p><strong>***The <em>Sunday Times </em>bestseller***</strong></p><p>‘Just relishable. Thank God for the balm of good writing’ <strong>NIGELLA LAWSON</strong><br>‘A wise, wonderful book’ <strong><em>OBSERVER</em><br>&#x27;</strong>Razor sharp on family, love and marriage&#x27; <strong>DAVID NICHOLLS</strong><br><strong>&#x27;</strong>I devoured it in one long lazy afternoon - I laughed and cried&#x27; <strong>VICTORIA HISLOP</strong></p><p><strong>Weddings aren&#x27;t just about the happy couple…</strong> <strong>A funny, touching, hopeful story of love, marriage and second chances </strong></p><p>It’s the day before her daughter’s wedding and things are not going well for Gail Baines.</p><p>First thing, she loses her job (or quits, depending who you ask). Then her ex-husband Max turns up at her door looking for somewhere to stay. He doesn’t even have a suit. Instead, he’s brought memories – and a cat looking for a new home.</p><p>Just as Gail is wondering what’s next, their daughter Debbie discovers her groom has been keeping a secret which could throw the whole wedding into question…</p><p>‘She is and always will be my favourite author’ <strong>LIANE MORIARTY</strong></p><p>&#x27;If Anne Tyler isn’t the best writer in the world, who is?&#x27;<strong> BBC R4 <em>WOMAN&#x27;S HOUR</em></strong></p><p>‘She knows all the secrets of the human heart’ <strong>MONICA ALI</strong></p><p>‘My favourite writer’ <strong>NICK HORNBY</strong></p><p>&#x27;Anne Tyler really is the best&#x27; <strong>GRAHAM NORTON</strong></p><p>&#x27;Our greatest chronicler of family life&#x27; <strong><em>DAILY MAIL</em></strong></p><p>&#x27;Nobody does it better&#x27; <em><strong>VOGUE</strong></em></p>"}, {"title": "The Bat", "author": "Jo Nesbo", "imprint": "Vintage", "division": "Vintage", "html": "<p><strong>**DETECTIVE HOLE IS SOON TO BE A MAJOR NETFLIX SERIES**</p><p>Discover the addictive first book in the bestselling Harry Hole series.</strong></p><p><strong>&#x27;A stunning opening to the series&#x27; <em>Sunday Times</em></strong></p><p><strong>Harry is out of his depth.</strong></p><p>Detective Harry Hole is meant to keep out of trouble. A young Norwegian girl taking a gap year in Sydney has been murdered, and Harry has been sent to Australia to assist in any way he can.</p><p><strong>He&#x27;s not supposed to get too involved.</strong></p><p>When the team unearths a string of unsolved murders and disappearances, nothing will stop Harry from finding out the truth. The hunt for a serial killer is on, but the murderer will talk only to Harry.</p><p><strong>He might be the next victim.</strong></p><p><strong>*JO NESBO HAS SOLD OVER 60 MILLION BOOKS WORLDWIDE*</strong></p><p>Jo Nesbo, Number 1<em> Sunday Times </em>bestseller, January 2024</p>"}], "tokens": {"writer_in": 8388, "writer_out": 934, "judge_in": 3586, "judge_out": 3599}, "duration_ms": 48669, "file": "9781529932287/blurbs_30eb4b24-4cb8-4e01-ac07-5b5842d5cf3e.json"}, {"isbn": "9781847927385", "work_id": 452493, "title": "Contents", "author": null, "genre": "nonfiction", "run_id": "db20aae0-f50c-4a3a-88f1-658d95712202", "run_time": "2026-08-20T09:46", "writer_model": "gpt-5.6-terra", "judge_model": "sonnet", "judge_model_id": "arn:aws:bedrock:us-east-1:651818016290:application-inference-profile/77s90iv36jn5", "n_variants": 3, "angle_hints": [], "status": "ok", "error": null, "judge_error": null, "winner_index": 0, "winner_angle": "memory as contested record", "rationale": "Candidate 0 wins because it earns its abstraction with one hard, specific image — survivor-witnesses set against historians who trusted perpetrator documents, \"whose evidence could bear the weight of the dead\" — giving the reader a concrete historiographical fight to remember an hour later. Candidate 2, the closest runner-up, stays smoother but more generic (\"political force as well as grief,\" \"stakes held within the stories a society chooses to preserve\") and lacks a single detail that couldn't sit on another history book's jacket. Candidate 1 is eliminated at the screen stage for touring the contents — five distinct beats (Poland/Paris, Yad Vashem/Eichmann, testimony dispute, Arendt, institution/archive/politics), each rushed through in a single sentence.", "all_below_bar": false, "variants": [{"index": 0, "angle": "memory as contested record", "html": "<p>The Holocaust did not enter public life as a settled story. In the years after the war, its meaning had to be fought for: in archives, courtrooms and institutions, by people who disagreed over whose evidence could bear the weight of the dead. Survivor-witnesses faced historians who trusted perpetrator documents; each struggle shaped the record that later generations inherited.</p><p>Contents follows that contest from the postwar battle against oblivion to the institutional force of Yad Vashem and the Eichmann trial. It brings into view the arguments beneath familiar acts of remembrance: what belongs in the archive, who may speak for a destroyed world, and how Jewish catastrophe becomes public history. The past remains present here as a field of claims, authority and consequence.</p>", "words": 123, "note_label": null, "note": "Passes screen; strongest quality is the concrete testimony-vs-perpetrator-documents detail; weakest quality is the somewhat familiar \"did not enter... as a settled story\" opening formula shared with the others.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2405, "output_tokens": 387, "duration_ms": 8530}, {"index": 1, "angle": "contested ownership of memory", "html": "<p>The Holocaust did not arrive in public memory intact. Its history had to be gathered from ruined communities, preserved against silence, and argued over by those who believed the record carried different obligations.</p><p>From the postwar struggle against oblivion in Poland and Paris to the battles around Yad Vashem and the Eichmann trial, this book follows the people who claimed the authority to tell that history. Survivor-witnesses and historians disputed the place of testimony, the force of perpetrator documents, and the meaning of Jewish destruction. Hannah Arendt’s controversy exposes how fiercely these questions could divide a public already living with the past.</p><p>As remembrance becomes institution, archive and political language, the book reveals the hard-fought choices inside what now appears to be shared memory.</p>", "words": 124, "note_label": "Fails screen", "note": "tours the contents (Poland/Paris, Yad Vashem/Eichmann, testimony dispute, Arendt controversy, institution/archive/political language are each given only a single sentence, exceeding the four-item ceiling); strongest quality is the Arendt line, which is also its most damaging tell since it's buried in a list rather than developed.", "verdict": "eliminated", "duplicate_of": null, "error": null, "input_tokens": 2405, "output_tokens": 262, "duration_ms": 7195}, {"index": 2, "angle": "authority over remembrance", "html": "<p>The Holocaust did not arrive in public life with a single, agreed meaning. Its remembrance was assembled under pressure: in arguments over whose records could speak, whose testimony could be trusted, and what the destruction of European Jewry should demand of the world.</p><p>Contents follows the struggle for authority over memory, from postwar efforts to prevent oblivion to the institutions that gave commemoration a public home. At Yad Vashem and during the Eichmann trial, survivors, historians and officials contend with a legacy that carries political force as well as grief. This is an account of how remembrance is made, and of the stakes still held within the stories a society chooses to preserve.</p>", "words": 113, "note_label": null, "note": "Passes screen but stays abstract throughout (\"whose records could speak,\" \"political force as well as grief,\" \"stakes still held within the stories a society chooses to preserve\"); strongest quality is its clean, controlled prose; weakest quality is that it never lands on one hard, specific image the reader can hold onto.", "verdict": "survives", "duplicate_of": null, "error": null, "input_tokens": 2405, "output_tokens": 473, "duration_ms": 9484}], "context": {"synopsis": "This book reconstructs the making of Holocaust memory as a long, bitter struggle over who would have the authority to name, narrate, archive, sacralize, and politically deploy the destruction of European Jewry. Rather than treating remembrance as a natural aftermath of catastrophe, it argues that Holocaust history was actively built by rival historians, survivor-witnesses, state institutions, intellectuals, and public figures. Across figures such as Salo Baron, Filip Friedman, Rachel Auerbach, Hannah Arendt, Raul Hilberg, Lucy Dawidowicz, and Elie Wiesel, the book shows how arguments over testimony, archives, objectivity, Jewish particularism, Zionism, and universal moral lessons shaped what the Holocaust would come to mean.\n\nThe narrative moves from the immediate postwar fight against oblivion in Poland and Paris, through the institutional battles around Yad Vashem and the Eichmann trial, to the explosive Arendt controversy and the eventual Americanization of Holocaust remembrance in the era of Wiesel, Jimmy Carter, and the U.S. Holocaust Memorial Museum. Along the way, the author tracks recurring conflicts: survivor testimony versus perpetrator documents, Jewish specificity versus universalization, cultural loss versus heroic resistance, and civilizational history versus a lachrymose narrative centered on victimhood. The book's major contribution is to reveal Holocaust memory not as a settled inheritance but as a contested political, historiographical, and moral construction whose present forms were won through struggle.", "genres": ["history"], "themes": ["Holocaust memory", "Zionism", "Eichmann trial", "Hannah Arendt", "survivor testimony", "Yad Vashem"], "tone": ["scholarly", "analytical", "critical"], "speech_register": "academic", "key_points": ["Author stance: critic", "Audience: educated layperson", "Approach: critical deconstruction"]}, "exemplars": [{"title": "A Hymn to Life", "author": "Gisèle Pelicot", "imprint": "Bodley Head", "division": "Vintage", "html": "<p><strong>The extraordinarily powerful memoir by a heroine of our times, whose story inspires change, compassion and courage.</strong></p><p>One November day, Gisèle Pelicot was called to a local police station and life as she knew it ended. Her husband of fifty years had been caught by a supermarket guard filming up women’s skirts. But on his computer was shattering evidence: for nearly a decade, he had been secretly drugging and raping her and inviting dozens of strangers into their home to abuse her.</p><p>Four years later, he and fifty other men were put on trial and Gisèle’s courage in waiving her right to anonymity made global headlines. ‘Shame must change sides,’ she declared, giving voice and hope to millions. Her words became a rallying cry and her decision marked a turning point in public feeling about sexual violence.</p><p>For the first time, and with unwavering honesty and grace, she describes a difficult childhood, first love, her career and motherhood. It is a life in determined search of happiness, both before and after her devastating discovery. She is an ordinary person who faces extraordinary catastrophe, whose example changes the world.</p><p><em><strong>A Hymn to Life</strong></em><strong> is an unforgettable testament and a promise. Its message is one of defiance and renewal – that victims have no reason to feel ashamed; that even after unimaginable betrayal we can go on; that the colour can come back to life. Ultimately, Gisèle Pelicot emerges with a renewed passion and reverence for living, and for love.</strong></p>"}, {"title": "Good Mood Food", "author": "Tim Spector", "imprint": "Jonathan Cape", "division": "Vintage", "html": "<p><strong>Eat better. Feel better. The groundbreaking new cookbook from the scientist, no. 1 bestselling author and co-founder of ZOE.</strong></p><p>For centuries we&#x27;ve failed to appreciate the connection between the health of the body and the health of the mind. But the science is now clear: what we eat affects how we feel, as well as the long-term health of our brains.</p><p>As scientist and bestselling cookbook author Tim Spector explains, the key is to understand the connection between our gut and our brain. When we nurture our gut microbiome with delicious, varied, plant-rich foods, we can improve our energy levels and day-to-day mood, our mental health and long-term brain health.</p><p>Packed with inspiring, easy, budget-friendly ideas, from weekend batch-cooking to energy-boosting breakfasts, from soothing suppers to lunches on-the-go, GOOD MOOD FOOD shows us how easy it is to eat better and feel better every day.</p>"}, {"title": "Politics On the Edge", "author": "Rory Stewart", "imprint": "Vintage", "division": "Vintage", "html": "<p>Over the course of a decade from 2010, Rory Stewart went from being a political outsider to standing for prime minister – before being sacked from a Conservative Party that he had come to barely recognise.</p><p>Tackling ministerial briefs on flood response and prison violence, engaging with conflict and poverty abroad as a foreign minister, and Brexit as a Cabinet minister, Stewart learned first-hand how profoundly hollow and inadequate our democracy and government had become. Cronyism, ignorance and sheer incompetence ran rampant. Around him, individual politicians laid the foundations for the political and economic chaos of today. Stewart emerged battered but with a profound affection for his constituency of Penrith and the Border, and a deep direct insight into the era of populism and global conflict.</p><p><em>Politics On the Edge</em> invites us into the mind of one of the most interesting actors on the British political stage. Uncompromising, candid and darkly humorous, this is his story of the challenges, absurdities and realities of political life. Instantly praised as a new classic, it is an astonishing portrait of our turbulent times.</p>"}], "tokens": {"writer_in": 7215, "writer_out": 1122, "judge_in": 3441, "judge_out": 3885}, "duration_ms": 50497, "file": "9781847927385/blurbs_db20aae0-f50c-4a3a-88f1-658d95712202.json"}]}</script>
+<script>
+(function () {
+  const DATA = JSON.parse(document.getElementById('blurb-data').textContent);
+  const BOOKS = DATA.books;
+  const GENRES = { fiction: 'Fiction', nonfiction: 'Non-fiction' };
+  const state = { tab: 'overview', genre: 'fiction', isbn: null, query: '' };
+
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const fmt = (n) => (n == null ? '–' : Number(n).toLocaleString('en-GB'));
+  const secs = (ms) => (ms == null ? '–' : (ms / 1000).toFixed(ms >= 10000 ? 0 : 1) + 's');
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) + '%' : '–');
+  const byGenre = (g) => BOOKS.filter((b) => b.genre === g);
+  const survivors = (b) => b.variants.filter((v) => v.verdict === 'survives').map((v) => v.index);
+  const decision = (b) => {
+    const s = survivors(b);
+    if (b.all_below_bar || s.length === 0) return 'none';
+    if (s.length === 1 && s[0] === b.winner_index) return 'sole';
+    return 'contested';
+  };
+  const VERDICT_LABEL = { survives: 'Survives screen', eliminated: 'Eliminated', unclear: 'Not stated' };
+
+  /* ---------- header ---------- */
+  const writers = [...new Set(BOOKS.map((b) => b.writer_model).filter(Boolean))];
+  const judges = [...new Set(BOOKS.map((b) => b.judge_model).filter(Boolean))];
+  const latest = BOOKS.map((b) => b.run_time).sort().at(-1);
+  document.getElementById('runmeta').innerHTML =
+    `<span><b class="num">${BOOKS.length}</b> books</span>` +
+    `<span>writer <b>${esc(writers.join(', '))}</b></span>` +
+    `<span>judge <b>${esc(judges.join(', '))}</b></span>` +
+    `<span>${esc(latest ? latest.replace('T', ' ') : '')}</span>`;
+  document.getElementById('brand-sub').textContent = `${DATA.run_files} run files, latest per title`;
+  document.getElementById('count-fiction').textContent = byGenre('fiction').length;
+  document.getElementById('count-nonfiction').textContent = byGenre('nonfiction').length;
+
+  /* ---------- overview ---------- */
+  function barChart({ title, sub, rows, total, expect, cls }) {
+    const max = Math.max(...rows.map((r) => r.value), expect || 0, 1);
+    const body = rows.map((r) => `
+      <div class="bar-row" title="${esc(r.key)}: ${r.value} of ${total}">
+        <span class="k">${esc(r.key)}</span>
+        <span class="bar-track"><span class="bar-fill ${r.cls || cls || ''}" style="width:${(r.value / max) * 100}%"></span></span>
+        <span class="v num">${r.value}<small>${pct(r.value, total)}</small></span>
+      </div>`).join('');
+    const expectHtml = expect != null
+      ? `<div class="expect-wrap"><span class="expect" style="left:${(expect / max) * 100}%"><span class="expect-label">even split ${expect % 1 ? expect.toFixed(1) : expect}</span></span></div>`
+      : '';
+    return `<div class="chart"><h3>${esc(title)}</h3><div class="sub">${esc(sub)}</div><div class="bars ${expect != null ? 'has-expect' : ''}">${body}${expectHtml}</div></div>`;
+  }
+
+  function slotCounts(books) {
+    const c = [0, 0, 0];
+    books.forEach((b) => { if (b.winner_index != null && b.winner_index < 3) c[b.winner_index] += 1; });
+    return c;
+  }
+
+  function renderOverview() {
+    const n = BOOKS.length;
+    const counts = slotCounts(BOOKS);
+    const fic = byGenre('fiction'), non = byGenre('nonfiction');
+    const decisions = { sole: 0, contested: 0, none: 0 };
+    BOOKS.forEach((b) => { decisions[decision(b)] += 1; });
+    const contested = BOOKS.filter((b) => decision(b) === 'contested');
+    const contestedCounts = slotCounts(contested);
+    const survivedBySlot = [0, 0, 0], wonWhenSurvived = [0, 0, 0];
+    BOOKS.forEach((b) => b.variants.forEach((v) => {
+      if (v.verdict !== 'survives' || v.index > 2) return;
+      survivedBySlot[v.index] += 1;
+      if (b.winner_index === v.index) wonWhenSurvived[v.index] += 1;
+    }));
+    const belowBar = BOOKS.filter((b) => b.all_below_bar).length;
+    const dupBooks = BOOKS.filter((b) => b.variants.some((v) => v.duplicate_of != null)).length;
+    const slotRows = (c, total, cls) => c.map((v, i) => ({ key: `Variant ${i}`, value: v, cls }));
+
+    const lead = `
+      <div class="ov-lead">
+        <div>
+          <div class="eyebrow">Winning slot, all ${n} books</div>
+          <div class="hero-num num">${counts[0]}<small>of ${n}</small></div>
+          <div class="hero-label">winners came from variant 0, the first candidate the judge reads. An even split would be ${(n / 3).toFixed(1)} per slot.</div>
+          <div class="stat-row">
+            <div class="stat"><div class="v num">${decisions.contested}</div><div class="l">real contests (2+ variants survived the screen)</div></div>
+            <div class="stat"><div class="v num">${decisions.sole}</div><div class="l">decided by the screen (only one variant survived)</div></div>
+            <div class="stat"><div class="v num">${decisions.none}</div><div class="l">nothing survived, least-damaged picked</div></div>
+          </div>
+        </div>
+        <div class="reading">
+          <p>The judge first runs a mechanical screen (rhetorical questions, triads, dash codas, four-item lists) and then picks among the survivors. Slot 0 wins <span class="num">${pct(counts[0], n)}</span> of all books, and <span class="num">${pct(contestedCounts[0], contested.length)}</span> of the ${contested.length} books where at least two variants survived the screen and the judge had a real choice.</p>
+          <p>Conditional on surviving the screen, slot 0 wins <span class="num">${pct(wonWhenSurvived[0], survivedBySlot[0])}</span> of the time, slot 1 <span class="num">${pct(wonWhenSurvived[1], survivedBySlot[1])}</span> and slot 2 <span class="num">${pct(wonWhenSurvived[2], survivedBySlot[2])}</span>. The judge does pick slots 1 and 2 (${counts[1] + counts[2]} books), but the lean toward the first variant is real in this run. This data alone cannot separate a position preference from the writer putting its strongest angle first; shuffling the order shown to the judge would.</p>
+          <p>${belowBar} ${belowBar === 1 ? 'book was' : 'books were'} judged with every variant below the bar. ${dupBooks} ${dupBooks === 1 ? 'book has' : 'books have'} duplicate variants.</p>
+        </div>
+      </div>`;
+
+    const charts = `
+      <div class="charts">
+        ${barChart({ title: 'Winning slot', sub: `All ${n} books`, rows: slotRows(counts), total: n, expect: n / 3 })}
+        ${barChart({ title: 'Winning slot, fiction', sub: `${fic.length} books`, rows: slotRows(slotCounts(fic)), total: fic.length, expect: fic.length / 3 })}
+        ${barChart({ title: 'Winning slot, non-fiction', sub: `${non.length} books`, rows: slotRows(slotCounts(non)), total: non.length, expect: non.length / 3 })}
+        ${barChart({ title: 'Winning slot in real contests', sub: `${contested.length} books where 2+ variants survived the screen`, rows: slotRows(contestedCounts), total: contested.length, expect: contested.length / 3 })}
+        <div class="chart">
+          <h3>Win rate once past the screen</h3>
+          <div class="sub">Wins divided by the number of times that slot survived</div>
+          <div class="bars">
+            ${[0, 1, 2].map((i) => `
+              <div class="rate-row" title="Variant ${i}: won ${wonWhenSurvived[i]} of ${survivedBySlot[i]} survivals">
+                <span class="k">Variant ${i}</span>
+                <span class="bar-track"><span class="bar-fill" style="width:${survivedBySlot[i] ? (wonWhenSurvived[i] / survivedBySlot[i]) * 100 : 0}%"></span></span>
+                <span class="v num">${pct(wonWhenSurvived[i], survivedBySlot[i])}<small>${wonWhenSurvived[i]} / ${survivedBySlot[i]}</small></span>
+              </div>`).join('')}
+          </div>
+        </div>
+        ${barChart({ title: 'How the winner was decided', sub: `All ${n} books`, total: n, rows: [
+          { key: 'Contest', value: decisions.contested, cls: '' },
+          { key: 'Screen', value: decisions.sole, cls: 'muted' },
+          { key: 'Below bar', value: decisions.none, cls: 'warn' },
+        ] })}
+      </div>`;
+
+    const rows = [...BOOKS].sort((a, b) => (a.genre === b.genre ? a.title.localeCompare(b.title) : a.genre.localeCompare(b.genre))).map((b) => `
+      <tr>
+        <td><button class="link" data-goto="${esc(b.genre)}/${esc(b.isbn)}"><span class="t">${esc(b.title)}</span>${b.author ? `<br><span class="a">${esc(b.author)}</span>` : ''}</button></td>
+        <td>${GENRES[b.genre] || esc(b.genre)}</td>
+        <td class="num">Variant ${b.winner_index}</td>
+        <td><span class="mini-verdicts">${b.variants.map((v) => `<span class="mv ${v.verdict} ${v.index === b.winner_index ? 'is-win' : ''}" title="Variant ${v.index}: ${VERDICT_LABEL[v.verdict]}"></span>`).join('')}</span></td>
+        <td>${{ sole: 'Screen', contested: 'Contest', none: 'Below bar' }[decision(b)]}</td>
+        <td>${esc(b.winner_angle || '')}</td>
+      </tr>`).join('');
+
+    const table = `
+      <div class="section-title">Every book</div>
+      <div class="section-sub">Latest run per title. Click a title to open it.</div>
+      <div class="legend">
+        <span><span class="mv survives"></span> survives screen</span>
+        <span><span class="mv eliminated"></span> eliminated</span>
+        <span><span class="mv unclear"></span> not stated</span>
+        <span><span class="mv survives is-win"></span> winner</span>
+      </div>
+      <div class="ov-table-wrap"><table class="ov-table">
+        <thead><tr><th>Title</th><th>Genre</th><th>Winner</th><th>Screen</th><th>Decided by</th><th>Winning angle</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table></div>`;
+
+    document.getElementById('overview-panel').innerHTML = lead + charts + table;
+  }
+
+  /* ---------- book list ---------- */
+  function visibleBooks() {
+    const q = state.query.trim().toLowerCase();
+    return byGenre(state.genre).filter((b) => !q || [b.title, b.author, b.isbn].some((f) => (f || '').toLowerCase().includes(q)));
+  }
+
+  function renderList() {
+    const books = visibleBooks();
+    const ul = document.getElementById('book-list');
+    document.getElementById('list-count').textContent = `${books.length} of ${byGenre(state.genre).length} ${GENRES[state.genre].toLowerCase()} titles`;
+    if (!books.length) { ul.innerHTML = '<li class="list-empty">No titles match.</li>'; return; }
+    ul.innerHTML = books.map((b) => `
+      <li><button class="book-item" data-isbn="${esc(b.isbn)}" aria-current="${b.isbn === state.isbn}">
+        <span><span class="t">${esc(b.title)}</span><span class="a">${esc(b.author || b.isbn)}</span></span>
+        <span class="slots" title="Winner: variant ${b.winner_index}${b.all_below_bar ? ' (all below bar)' : ''}">${[0, 1, 2].map((i) => `<span class="slot ${i === b.winner_index ? 'is-win' : ''} ${b.all_below_bar ? 'is-bar' : ''}"></span>`).join('')}</span>
+      </button></li>`).join('');
+    const current = ul.querySelector('[aria-current="true"]');
+    if (current) current.scrollIntoView({ block: 'nearest' });
+  }
+
+  /* ---------- detail ---------- */
+  function renderDetail() {
+    const b = BOOKS.find((x) => x.isbn === state.isbn);
+    const el = document.getElementById('detail');
+    if (!b) { el.innerHTML = '<p class="list-empty">Select a title.</p>'; return; }
+    const ctx = b.context;
+    const winner = b.variants.find((v) => v.index === b.winner_index);
+    const head = `
+      <header class="book-head">
+        <div>
+          <h1 class="book-title">${esc(b.title)}</h1>
+          ${b.author ? `<div class="book-author">${esc(b.author)}</div>` : ''}
+          <div class="book-ids"><span class="num">ISBN ${esc(b.isbn)}</span><span class="num">work ${esc(b.work_id)}</span><span>${GENRES[b.genre]}</span>${ctx.speech_register ? `<span>${esc(ctx.speech_register)} register</span>` : ''}</div>
+        </div>
+        <div class="chips">
+          ${ctx.genres.map((g) => `<span class="chip">${esc(g)}</span>`).join('')}
+          ${ctx.tone.map((t) => `<span class="chip tone">${esc(t)}</span>`).join('')}
+        </div>
+      </header>`;
+
+    const verdict = `
+      <section class="verdict-panel">
+        <div class="verdict-winner">
+          <span class="eyebrow">Judge's pick</span>
+          <span class="big">Variant ${b.winner_index}</span>
+          <span class="angle">${esc(winner?.angle || b.winner_angle || '')}</span>
+          ${b.all_below_bar ? '<span class="bar-flag">All three below the bar. Least damaged chosen.</span>' : ''}
+          ${b.judge_error ? `<span class="bar-flag">Judge error: ${esc(b.judge_error)}</span>` : ''}
+        </div>
+        <div class="verdict-rationale"><span class="eyebrow">Rationale</span>${esc(b.rationale || 'No rationale recorded.')}</div>
+      </section>`;
+
+    const variants = `<section class="variants">${b.variants.map((v) => {
+      const isWin = v.index === b.winner_index;
+      return `
+        <article class="variant ${isWin ? 'is-winner' : ''}" aria-label="Variant ${v.index}${isWin ? ', winner' : ''}">
+          <div class="variant-head">
+            <div class="variant-id"><span class="slot-name">Variant ${v.index}</span><span class="angle">${esc(v.angle || '')}</span></div>
+            ${isWin ? '<span class="win-tag">Winner</span>' : ''}
+          </div>
+          ${v.error ? `<div class="dup-note">Generation error: ${esc(v.error)}</div>` : ''}
+          <div class="copy">${v.html || '<p class="a">No copy produced.</p>'}</div>
+          ${v.duplicate_of != null ? `<div class="dup-note">Identical to variant ${v.duplicate_of}.</div>` : ''}
+          <div class="variant-meta"><span class="num">${v.words} words</span><span class="num">${fmt(v.output_tokens)} tokens out</span><span class="num">${secs(v.duration_ms)}</span></div>
+          <div class="judge-note">
+            <div class="judge-note-head"><span class="eyebrow">Judge's note</span><span class="verdict-chip ${v.verdict}">${v.note_label ? esc(v.note_label) : VERDICT_LABEL[v.verdict]}</span></div>
+            ${esc(v.note || 'No note recorded for this variant.')}
+          </div>
+        </article>`;
+    }).join('')}</section>`;
+
+    const folds = `
+      <div class="folds">
+        <details class="fold">
+          <summary>Book context given to the writer<span class="sum-right">${ctx.themes.length} themes, ${ctx.key_points.length} key points</span></summary>
+          <div class="fold-body ctx-grid">
+            <div>
+              <div class="ctx-block"><span class="eyebrow">Synopsis</span><p class="synopsis">${esc(ctx.synopsis || '')}</p></div>
+            </div>
+            <div>
+              <div class="ctx-block"><span class="eyebrow">Themes</span><p>${ctx.themes.map(esc).join(' · ')}</p></div>
+              <div class="ctx-block"><span class="eyebrow">Key points</span><ul>${ctx.key_points.map((k) => `<li>${esc(k)}</li>`).join('')}</ul></div>
+              ${b.angle_hints.length ? `<div class="ctx-block"><span class="eyebrow">Angle hints</span><p>${b.angle_hints.map(esc).join(' · ')}</p></div>` : ''}
+            </div>
+          </div>
+        </details>
+        <details class="fold">
+          <summary>Exemplars shown to the writer<span class="sum-right">${b.exemplars.length} published ${b.exemplars.length === 1 ? 'blurb' : 'blurbs'}</span></summary>
+          <div class="fold-body exemplars">
+            ${b.exemplars.length ? b.exemplars.map((e) => `
+              <div class="exemplar">
+                <div class="ex-title">${esc(e.title)}</div>
+                <div class="ex-meta">${esc([e.author, e.imprint].filter(Boolean).join(' · '))}</div>
+                <div class="ex-copy">${e.html}</div>
+              </div>`).join('') : '<p class="a">No exemplars were supplied for this run.</p>'}
+          </div>
+        </details>
+        <details class="fold">
+          <summary>Run details<span class="sum-right">${secs(b.duration_ms)} end to end</span></summary>
+          <div class="fold-body kv">
+            <div><span class="eyebrow">Writer model</span><span class="v">${esc(b.writer_model)}</span></div>
+            <div><span class="eyebrow">Judge model</span><span class="v">${esc(b.judge_model)}</span></div>
+            <div><span class="eyebrow">Writer tokens</span><span class="v num">${fmt(b.tokens.writer_in)} in · ${fmt(b.tokens.writer_out)} out</span></div>
+            <div><span class="eyebrow">Judge tokens</span><span class="v num">${fmt(b.tokens.judge_in)} in · ${fmt(b.tokens.judge_out)} out</span></div>
+            <div><span class="eyebrow">Run</span><span class="v">${esc(b.run_time.replace('T', ' '))}</span></div>
+            <div><span class="eyebrow">Status</span><span class="v">${esc(b.status)}${b.error ? ` · ${esc(b.error)}` : ''}</span></div>
+            <div><span class="eyebrow">Run id</span><span class="v num">${esc(b.run_id)}</span></div>
+            <div><span class="eyebrow">File</span><span class="v">output/${esc(b.file)}</span></div>
+          </div>
+        </details>
+      </div>`;
+
+    el.innerHTML = head + verdict + variants + folds;
+    el.scrollTop = 0;
+    window.scrollTo({ top: 0 });
+  }
+
+  /* ---------- routing ---------- */
+  function apply() {
+    document.querySelectorAll('.tab').forEach((t) => t.setAttribute('aria-selected', String(t.dataset.tab === state.tab)));
+    document.getElementById('view-overview').classList.toggle('is-active', state.tab === 'overview');
+    document.getElementById('view-books').classList.toggle('is-active', state.tab !== 'overview');
+    if (state.tab !== 'overview') {
+      state.genre = state.tab;
+      const pool = byGenre(state.genre);
+      if (!pool.some((b) => b.isbn === state.isbn)) state.isbn = pool[0]?.isbn || null;
+      renderList();
+      renderDetail();
+    }
+    const hash = state.tab === 'overview' ? '#overview' : `#${state.genre}/${state.isbn || ''}`;
+    if (location.hash !== hash) history.replaceState(null, '', hash);
+    document.title = state.tab === 'overview' ? 'Blurb Lab Verdicts' : `${BOOKS.find((b) => b.isbn === state.isbn)?.title || ''} · Blurb Lab Verdicts`;
+  }
+
+  function readHash() {
+    const [tab, isbn] = location.hash.replace(/^#/, '').split('/');
+    if (tab === 'fiction' || tab === 'nonfiction') { state.tab = tab; if (isbn) state.isbn = isbn; }
+    else state.tab = 'overview';
+  }
+
+  document.querySelectorAll('.tab').forEach((t) => t.addEventListener('click', () => { state.tab = t.dataset.tab; apply(); }));
+  document.getElementById('book-list').addEventListener('click', (e) => {
+    const item = e.target.closest('[data-isbn]');
+    if (!item) return;
+    state.isbn = item.dataset.isbn;
+    apply();
+  });
+  document.getElementById('overview-panel').addEventListener('click', (e) => {
+    const link = e.target.closest('[data-goto]');
+    if (!link) return;
+    const [genre, isbn] = link.dataset.goto.split('/');
+    state.tab = genre; state.isbn = isbn; apply();
+  });
+  document.getElementById('search').addEventListener('input', (e) => { state.query = e.target.value; renderList(); });
+  document.addEventListener('keydown', (e) => {
+    if (state.tab === 'overview' || e.target.matches('input, textarea')) return;
+    if (e.key !== 'ArrowDown' && e.key !== 'ArrowUp' && e.key !== 'j' && e.key !== 'k') return;
+    const books = visibleBooks();
+    const i = books.findIndex((b) => b.isbn === state.isbn);
+    const next = books[i + ((e.key === 'ArrowDown' || e.key === 'j') ? 1 : -1)];
+    if (!next) return;
+    e.preventDefault();
+    state.isbn = next.isbn;
+    apply();
+  });
+  window.addEventListener('hashchange', () => { readHash(); apply(); });
+
+  renderOverview();
+  readHash();
+  apply();
+})();
+</script>
+
+</body></html>
