@@ -1,0 +1,16 @@
+{
+  "name": "design-skills",
+  "version": "1.0.0",
+  "description": "Design skills for the team's artifacts: the house style for HTML artifact pages, with tokens, components, light and dark themes and a live example",
+  "author": {
+    "name": "Inês Pinheiro"
+  },
+  "keywords": [
+    "design",
+    "artifacts",
+    "house-style",
+    "css",
+    "tokens",
+    "dark-mode"
+  ]
+}

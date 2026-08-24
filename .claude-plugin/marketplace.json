@@ -46,6 +46,16 @@
       "category": "productivity"
     },
     {
+      "name": "design-skills",
+      "description": "Design skills for the team's artifacts: the house style for HTML artifact pages, with tokens, components, light and dark themes and a live example",
+      "version": "1.0.0",
+      "author": {
+        "name": "Inês Pinheiro"
+      },
+      "source": "./plugins/design-skills",
+      "category": "productivity"
+    },
+    {
       "name": "dev-commands",
       "description": "Developer utility commands for codebase analysis, branch reports, and session handoffs",
       "version": "1.0.0",

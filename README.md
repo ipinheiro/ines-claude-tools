@@ -1,13 +1,13 @@
 # ines-claude-tools
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugins-blueviolet?logo=anthropic&logoColor=white)
-![Plugins](https://img.shields.io/badge/plugins-7-blue)
-![Skills](https://img.shields.io/badge/skills-24-green)
+![Plugins](https://img.shields.io/badge/plugins-8-blue)
+![Skills](https://img.shields.io/badge/skills-25-green)
 ![Commands](https://img.shields.io/badge/commands-6-orange)
 ![Agents](https://img.shields.io/badge/agents-17-red)
 ![Pine tree approved](https://img.shields.io/badge/%F0%9F%8C%B2-approved-2ea44f)
 
-A [plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) for Claude Code. It ships seven plugins containing [skills](https://code.claude.com/docs/en/skills), [subagents](https://code.claude.com/docs/en/sub-agents), and [hooks](https://code.claude.com/docs/en/hooks).
+A [plugin marketplace](https://code.claude.com/docs/en/plugin-marketplaces) for Claude Code. It ships eight plugins containing [skills](https://code.claude.com/docs/en/skills), [subagents](https://code.claude.com/docs/en/sub-agents), and [hooks](https://code.claude.com/docs/en/hooks).
 
 Verified against Claude Code v2.1.222.
 
@@ -36,7 +36,7 @@ Verified against Claude Code v2.1.222.
 | Path | Contents |
 |------|----------|
 | `.claude-plugin/marketplace.json` | The marketplace catalog. One entry per plugin |
-| `plugins/` | The seven plugin packages |
+| `plugins/` | The eight plugin packages |
 | `tests/` | Tests for the hook scripts. `uv run pytest` |
 
 Documentation is not vendored here. Component schemas change often, so `CLAUDE.md` points at [code.claude.com/docs](https://code.claude.com/docs/en/) and a local snapshot would only go stale and override it.
@@ -133,6 +133,10 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │       ├── writing-clearly                 sentence craft for any prose: docs, commits, posts
 │       └── writing-confluence-docs         house style for the team wiki: grammar, spelling, voice, formatting
 │
+├── design-skills                  v1.0.0   1 skill
+│   └── skills/
+│       └── styling-artifacts               team house style for HTML artifact pages: tokens, components, themes
+│
 ├── git-conventions                v1.0.0   1 skill · 3 hooks
 │   ├── skills/
 │   │   └── git-conventions                 atomic commits, explicit staging, branch naming
@@ -170,6 +174,7 @@ Browse with `/plugin` and pick from the **Discover** tab, or install by name:
 /plugin install dev-commands@ines-claude-tools
 /plugin install workflow-skills@ines-claude-tools
 /plugin install productivity-skills@ines-claude-tools
+/plugin install design-skills@ines-claude-tools
 /plugin install git-conventions@ines-claude-tools
 /plugin install meta-skills@ines-claude-tools
 ```

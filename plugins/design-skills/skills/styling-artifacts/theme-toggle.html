@@ -1,0 +1,40 @@
+<!-- Theme toggle. The button goes in .top-right of the top bar; the script
+     goes at the end of the body. Click flips between light and dark from
+     whatever is in effect, remembers the choice, and keeps the icon honest
+     if the host restamps data-theme after load. -->
+<button class="theme-toggle" id="theme-toggle" aria-label="Switch to dark">
+  <svg class="ic-sun" viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+    <circle cx="10" cy="10" r="3.4"/>
+    <path d="M10 1.8v2M10 16.2v2M18.2 10h-2M3.8 10h-2M15.8 4.2l-1.4 1.4M5.6 14.4l-1.4 1.4M15.8 15.8l-1.4-1.4M5.6 5.6L4.2 4.2"/>
+  </svg>
+  <svg class="ic-moon" viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+    <path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7Z"/>
+  </svg>
+</button>
+
+<script>
+  (function () {
+    const root = document.documentElement;
+    const btn = document.getElementById("theme-toggle");
+    const mq = matchMedia("(prefers-color-scheme: dark)");
+    function effectiveTheme() {
+      if (root.dataset.theme === "dark" || root.dataset.theme === "light") return root.dataset.theme;
+      return mq.matches ? "dark" : "light";
+    }
+    function sync() {
+      const dark = effectiveTheme() === "dark";
+      document.body.classList.toggle("is-dark", dark);
+      btn.setAttribute("aria-label", dark ? "Switch to light" : "Switch to dark");
+      document.dispatchEvent(new CustomEvent("themechange", { detail: { theme: dark ? "dark" : "light" } }));
+    }
+    btn.addEventListener("click", () => {
+      const next = effectiveTheme() === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      try { localStorage.setItem("dsa-theme", next); } catch (e) {}
+      sync();
+    });
+    mq.addEventListener("change", sync);
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    sync();
+  })();
+</script>

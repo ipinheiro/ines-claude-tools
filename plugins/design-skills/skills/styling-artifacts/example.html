@@ -1,0 +1,1244 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Artifact House Style</title>
+<!-- Font link and theme boot. Goes at the top of every page, before the
+     stylesheet. The boot script runs before any content paints: it stamps a
+     saved choice onto <html> and otherwise leaves the document un-stamped so
+     the claude.ai host or the operating system decides. -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,300..700&display=swap">
+<script>
+  (function () {
+    let saved = null;
+    try { saved = localStorage.getItem("dsa-theme"); } catch (e) {}
+    if (saved === "dark" || saved === "light") document.documentElement.dataset.theme = saved;
+  })();
+</script>
+<style>
+/* House tokens and base. Paste this block first and style every component
+   through the variables, never with a literal colour. The three theme blocks
+   are deliberate: bare :root is the light palette, the media query covers
+   viewers who never chose a theme, and the [data-theme="dark"] block covers
+   viewers who did (or pressed the toggle). Keep all three in sync. */
+
+:root {
+  color-scheme: light;
+  --bg: #F5F1EA;
+  --surface: #FFFDFA;
+  --surface-2: #ECE6DB;
+  --ink: #1D1915;
+  --ink-2: #4C453D;
+  --muted: #746C61;
+  --line: #E3DCD1;
+  --line-2: #CCC3B5;
+  --accent: #A8431F;
+  --accent-ink: #FFFFFF;
+  --accent-soft: #F6E1D7;
+  --accent-wash: #FAF0EA;
+  --ok: #2F6B5E;
+  --ok-soft: #DBEBE5;
+  --warn: #7F5E0E;
+  --warn-soft: #F5EAD0;
+  --bad: #8A2C3B;
+  --bad-soft: #F5DFE2;
+  --shadow: 0 1px 2px rgba(29, 25, 21, 0.05), 0 8px 24px -16px rgba(29, 25, 21, 0.22);
+  --radius: 6px;
+  --font: Archivo, Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --bg: #1F1B18;
+    --surface: #27221E;
+    --surface-2: #302A25;
+    --ink: #EEE9E2;
+    --ink-2: #BFB7AD;
+    --muted: #978F84;
+    --line: #38312B;
+    --line-2: #49423B;
+    --accent: #E48A63;
+    --accent-ink: #3A1A0E;
+    --accent-soft: #452519;
+    --accent-wash: #2E2320;
+    --ok: #8FC4B3;
+    --ok-soft: #1F332E;
+    --warn: #D9B25A;
+    --warn-soft: #3A3016;
+    --bad: #E08A97;
+    --bad-soft: #3E2227;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #1F1B18;
+  --surface: #27221E;
+  --surface-2: #302A25;
+  --ink: #EEE9E2;
+  --ink-2: #BFB7AD;
+  --muted: #978F84;
+  --line: #38312B;
+  --line-2: #49423B;
+  --accent: #E48A63;
+  --accent-ink: #3A1A0E;
+  --accent-soft: #452519;
+  --accent-wash: #2E2320;
+  --ok: #8FC4B3;
+  --ok-soft: #1F332E;
+  --warn: #D9B25A;
+  --warn-soft: #3A3016;
+  --bad: #E08A97;
+  --bad-soft: #3E2227;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.3), 0 8px 24px -16px rgba(0, 0, 0, 0.6);
+}
+
+/* ---------- base ---------- */
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  font-feature-settings: "kern";
+}
+button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+input, select { font: inherit; color: inherit; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible, summary:focus-visible, [tabindex]:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+p { margin: 0; }
+p + p { margin-top: 0.8em; }
+strong { font-weight: 500; }
+h1, h2, h3, h4 { margin: 0; font-weight: 500; text-wrap: balance; }
+
+/* ---------- the utilities every page uses ---------- */
+/* Display register: the wide cut of Archivo, for elements 22px and larger only. */
+.display { font-stretch: 112%; }
+/* Small-caps label. Never a heading. */
+.eyebrow {
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+/* Digits that line up in columns. */
+.num { font-variant-numeric: tabular-nums; }
+
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; animation: none !important; }
+}
+
+/* House components. Every rule styles through tokens.css; there is no colour
+   literal in this file. Sections: top bar, theme toggle, views, segmented
+   control, split layout, rail nav, page head, side-rail section, lead,
+   verdict panel, cards, state (chips, marks, banners, legend), reference
+   cards, key-value grid, callout, note, empty state, table, charts, ladder,
+   heatmap, progress, tooltip, folds, code, controls, page foot, responsive. */
+
+/* ---------- top bar ---------- */
+.top {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  height: 56px;
+  padding: 0 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+}
+.brand { display: flex; align-items: baseline; gap: 10px; }
+.brand-name { font-size: 15px; font-weight: 500; letter-spacing: -0.01em; }
+.brand-sub { font-size: 12px; color: var(--muted); }
+.tabs { display: flex; gap: 4px; }
+.tab {
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  text-decoration: none;
+  white-space: nowrap;
+  transition: background 120ms ease, color 120ms ease;
+}
+.tab:hover { background: var(--surface-2); text-decoration: none; }
+.tab[aria-selected="true"], .tab[aria-current="true"] { background: var(--ink); color: var(--bg); }
+.tab .count { margin-left: 6px; font-weight: 400; opacity: 0.65; }
+.top-right { justify-self: end; display: flex; align-items: center; gap: 16px; }
+.top-meta { font-size: 12px; color: var(--muted); display: flex; gap: 14px; white-space: nowrap; }
+.top-meta b { font-weight: 500; color: var(--ink-2); }
+
+/* ---------- theme toggle ---------- */
+.theme-toggle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: 1px solid var(--line-2);
+  background: var(--surface);
+  display: grid;
+  place-items: center;
+  transition: transform 120ms ease, background 120ms ease;
+}
+.theme-toggle:hover { background: var(--surface-2); }
+.theme-toggle:active { transform: scale(0.88); }
+.theme-toggle svg { grid-area: 1 / 1; width: 16px; height: 16px; color: var(--ink-2); transition: opacity 250ms ease, transform 350ms ease; }
+.theme-toggle .ic-sun { opacity: 0; transform: rotate(-90deg) scale(0.5); }
+.theme-toggle .ic-moon { opacity: 1; transform: none; }
+.is-dark .theme-toggle .ic-sun { opacity: 1; transform: none; }
+.is-dark .theme-toggle .ic-moon { opacity: 0; transform: rotate(90deg) scale(0.5); }
+
+/* ---------- views (hash-routed tab panels) ---------- */
+.view { display: none; }
+.view.is-active { display: block; }
+
+/* ---------- segmented control ---------- */
+.seg { display: inline-flex; gap: 2px; padding: 3px; background: var(--surface-2); border-radius: 999px; }
+.seg button {
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: background 150ms ease, color 150ms ease, box-shadow 150ms ease;
+}
+.seg button:hover { color: var(--ink); }
+.seg button[aria-selected="true"] { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+
+/* ---------- split layout: sticky list + detail ---------- */
+.split {
+  display: grid;
+  grid-template-columns: 300px minmax(0, 1fr);
+  min-height: calc(100vh - 56px);
+}
+.list {
+  position: sticky;
+  top: 56px;
+  height: calc(100vh - 56px);
+  overflow-y: auto;
+  border-right: 1px solid var(--line);
+  background: var(--surface);
+}
+.list-head { position: sticky; top: 0; z-index: 1; background: var(--surface); padding: 14px 14px 10px; border-bottom: 1px solid var(--line); }
+.list-hint { margin-top: 8px; font-size: 11px; color: var(--muted); display: flex; justify-content: space-between; }
+.list-items { list-style: none; margin: 0; padding: 6px 0 24px; }
+.list-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+  width: 100%;
+  padding: 10px 14px;
+  text-align: left;
+  border-left: 2px solid transparent;
+  transition: background 100ms ease;
+}
+.list-item:hover { background: var(--bg); }
+.list-item[aria-current="true"] { background: var(--accent-wash); border-left-color: var(--accent); }
+.list-item .t { display: block; font-size: 14px; font-weight: 500; line-height: 1.3; }
+.list-item .a { display: block; font-size: 12px; color: var(--muted); margin-top: 2px; }
+.slots { display: inline-flex; gap: 3px; }
+.slot { width: 9px; height: 9px; border-radius: 2px; background: var(--line-2); }
+.slot.is-on { background: var(--accent); }
+.slot.is-warn { background: var(--warn); }
+.counts { display: inline-flex; gap: 8px; font-size: 12px; color: var(--muted); }
+.counts b { font-weight: 500; color: var(--ink-2); }
+.counts .warn { color: var(--warn); }
+.counts .bad { color: var(--bad); }
+.list-empty { padding: 24px 14px; color: var(--muted); font-size: 13px; }
+.detail { padding: 32px 40px 80px; max-width: 1480px; }
+
+/* ---------- rail nav: section links inside a long detail ---------- */
+.rail-nav { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+.rail-nav a, .rail-nav button {
+  display: flex; justify-content: space-between; align-items: center; gap: 12px;
+  padding: 9px 2px;
+  border-bottom: 1px solid var(--line);
+  font-size: 13px; font-weight: 500; color: var(--ink-2);
+  text-align: left; text-decoration: none;
+  transition: color 150ms ease;
+}
+.rail-nav a:hover, .rail-nav button:hover { color: var(--ink); text-decoration: none; }
+.rail-nav [aria-current="true"] { color: var(--accent); }
+.rail-nav .count { font-size: 12px; font-weight: 400; color: var(--muted); }
+
+/* ---------- page head ---------- */
+.page-head { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 16px 32px; padding-bottom: 24px; border-bottom: 1px solid var(--line); }
+.page-title { font-size: 30px; line-height: 1.15; letter-spacing: -0.015em; font-weight: 500; font-stretch: 112%; }
+.page-sub { margin-top: 4px; font-size: 16px; color: var(--ink-2); font-weight: 300; }
+.page-ids { margin-top: 10px; font-size: 12px; color: var(--muted); display: flex; flex-wrap: wrap; gap: 4px 14px; }
+.page-right { display: flex; flex-wrap: wrap; align-items: center; justify-content: flex-end; gap: 12px 16px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; max-width: 520px; justify-content: flex-end; }
+.chip { font-size: 12px; padding: 3px 9px; border-radius: 999px; border: 1px solid var(--line-2); color: var(--ink-2); background: var(--surface); }
+.chip.tone { border-style: dashed; }
+
+/* ---------- section heading and side-rail section ---------- */
+.section-title { font-size: 18px; font-weight: 500; margin: 8px 0 4px; }
+.section-sub { font-size: 13px; color: var(--muted); margin-bottom: 16px; }
+.sec { display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 16px 48px; align-items: start; padding: 36px 0; border-bottom: 1px solid var(--line); }
+.sec:last-child { border-bottom: 0; }
+.sec-head { position: sticky; top: 72px; }
+.sec-head h2 { font-size: 18px; font-weight: 500; }
+.sec-head .eyebrow { display: block; margin-bottom: 6px; }
+.sec-note { margin-top: 10px; font-size: 14px; line-height: 1.55; color: var(--ink-2); }
+.sec-note + .sec-note { margin-top: 0.7em; }
+
+/* ---------- lead: hero number + reading ---------- */
+.lead { display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr); gap: 40px 64px; align-items: start; padding-bottom: 36px; border-bottom: 1px solid var(--line); }
+.hero-num { font-size: 64px; font-weight: 300; line-height: 1; letter-spacing: -0.02em; font-stretch: 112%; }
+.hero-num small { font-size: 24px; font-weight: 300; color: var(--muted); letter-spacing: -0.01em; margin-left: 6px; }
+.hero-label { margin-top: 10px; font-size: 16px; color: var(--ink-2); max-width: 40ch; }
+.reading { font-size: 15px; line-height: 1.65; color: var(--ink); max-width: 64ch; }
+.reading p + p { margin-top: 0.9em; }
+.stat-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; margin-top: 28px; }
+.lead > .stat-row { grid-column: 1 / -1; margin-top: 0; }
+.stat { padding: 14px 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.stat .v { font-size: 26px; font-weight: 400; letter-spacing: -0.02em; line-height: 1.1; font-stretch: 112%; }
+.stat .l { margin-top: 4px; font-size: 12px; color: var(--muted); }
+.stat.good .v { color: var(--ok); }
+.stat.caution .v { color: var(--warn); }
+.stat.bad .v { color: var(--bad); }
+
+/* ---------- verdict panel ---------- */
+.verdict-panel { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 32px; padding: 28px 0; border-bottom: 1px solid var(--line); }
+.verdict-answer { display: flex; flex-direction: column; gap: 6px; align-items: flex-start; }
+.verdict-answer .big { font-size: 22px; font-weight: 500; letter-spacing: -0.01em; color: var(--accent); font-stretch: 112%; }
+.verdict-answer .angle { font-size: 14px; color: var(--ink-2); }
+.verdict-rationale { max-width: 72ch; font-size: 15px; line-height: 1.6; color: var(--ink); }
+.verdict-rationale .eyebrow { display: block; margin-bottom: 8px; }
+
+/* ---------- comparison cards ---------- */
+.cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.card.is-winner { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent), var(--shadow); }
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 16px 20px 12px; border-bottom: 1px solid var(--line); }
+.card-id { display: flex; flex-direction: column; gap: 3px; }
+.card-id .slot-name { font-size: 12px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); }
+.card.is-winner .slot-name { color: var(--accent); }
+.card-id .angle { font-size: 15px; font-weight: 500; letter-spacing: -0.005em; }
+.tag { flex: none; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; padding: 4px 8px; border-radius: 3px; background: var(--accent); color: var(--accent-ink); }
+.copy { padding: 20px 20px 22px; font-size: 15px; line-height: 1.6; max-width: 62ch; }
+.copy strong { font-weight: 700; }
+.copy p + p { margin-top: 0.9em; }
+.card-foot { margin-top: auto; padding: 14px 20px 16px; background: var(--surface-2); border-top: 1px solid var(--line); font-size: 13px; line-height: 1.55; color: var(--ink-2); border-radius: 0 0 var(--radius) var(--radius); }
+.card-foot-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 6px 10px; margin-bottom: 6px; }
+.card-foot-head .eyebrow { white-space: nowrap; }
+.card-meta { display: flex; gap: 14px; padding: 0 20px 14px; font-size: 11px; color: var(--muted); }
+
+/* ---------- state: shape-coded chips, marks, banners, legend ----------
+   good = filled circle, caution = diamond, bad = filled square,
+   neutral = outlined circle. A state always has both a colour and a shape. */
+.state {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase;
+  line-height: 1.4; padding: 2px 9px 2px 8px; border-radius: 999px;
+}
+.state::before, .mark, .banner::before, .legend i { content: ""; display: inline-block; width: 8px; height: 8px; flex: none; }
+.state::before { width: 7px; height: 7px; }
+.state.good, .banner.good { color: var(--ok); background: var(--ok-soft); }
+.state.caution, .banner.caution { color: var(--warn); background: var(--warn-soft); }
+.state.bad, .banner.bad { color: var(--bad); background: var(--bad-soft); }
+.state.neutral, .banner.neutral { color: var(--muted); background: var(--surface); border: 1px solid var(--line-2); }
+.state.good::before, .mark.good, .banner.good::before, .legend .good { background: var(--ok); border-radius: 50%; }
+.state.caution::before, .mark.caution, .banner.caution::before, .legend .caution { background: var(--warn); border-radius: 1px; transform: rotate(45deg) scale(0.85); }
+.state.bad::before, .mark.bad, .banner.bad::before, .legend .bad { background: var(--bad); border-radius: 1px; }
+.state.neutral::before, .mark.neutral, .banner.neutral::before, .legend .neutral { background: transparent; border: 1px solid currentColor; border-radius: 50%; }
+.mark.neutral, .legend .neutral { border-color: var(--line-2); }
+.marks { display: inline-flex; gap: 5px; align-items: center; }
+.mark { width: 10px; height: 10px; }
+.mark.is-win { box-shadow: 0 0 0 2px var(--surface), 0 0 0 3px var(--accent); }
+.banner { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--radius); font-size: 13px; font-weight: 500; line-height: 1.4; }
+.banner .banner-more { margin-left: auto; font-weight: 400; opacity: 0.85; }
+.legend { display: flex; flex-wrap: wrap; gap: 16px; margin: 0 0 12px; font-size: 12px; color: var(--muted); align-items: center; }
+.legend span { display: inline-flex; align-items: center; gap: 6px; }
+.legend .accent { background: var(--accent); border-radius: 1px; }
+.legend .muted { background: var(--line-2); border-radius: 1px; }
+
+/* ---------- reference cards ---------- */
+.ref-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+.ref-card { padding: 18px 20px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.ref-card .ref-title { font-size: 15px; font-weight: 500; }
+.ref-card .ref-meta { font-size: 12px; color: var(--muted); margin: 2px 0 12px; }
+.ref-card .ref-copy { font-size: 13px; line-height: 1.55; color: var(--ink-2); max-height: 340px; overflow-y: auto; padding-right: 6px; }
+.ref-card .ref-copy strong { font-weight: 700; color: var(--ink); }
+
+/* ---------- key-value grid ---------- */
+.kv { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 16px 32px; }
+.kv div { font-size: 13px; }
+.kv .eyebrow { display: block; margin-bottom: 3px; }
+.kv .v { color: var(--ink); overflow-wrap: anywhere; }
+
+/* ---------- callout with tag, note ---------- */
+.callout { display: flex; gap: 14px; align-items: flex-start; padding: 14px 16px; border: 1px solid var(--line-2); border-radius: var(--radius); background: var(--surface); }
+.callout.caution { border-color: var(--warn); background: var(--warn-soft); }
+.callout.bad { border-color: var(--bad); background: var(--bad-soft); }
+.callout.good { border-color: var(--ok); background: var(--ok-soft); }
+.callout .tag-label { flex: none; margin-top: 2px; font-size: 11px; font-weight: 500; letter-spacing: 0.08em; text-transform: uppercase; border: 1px solid currentColor; padding: 2px 6px; border-radius: 3px; color: var(--ink-2); }
+.callout.caution .tag-label { color: var(--warn); }
+.callout.bad .tag-label { color: var(--bad); }
+.callout.good .tag-label { color: var(--ok); }
+.callout p { font-size: 14px; line-height: 1.55; max-width: 76ch; color: var(--ink); }
+.callout strong { font-weight: 500; }
+.note { padding: 12px 15px; background: var(--surface-2); border-left: 3px solid var(--line-2); border-radius: 0 var(--radius) var(--radius) 0; font-size: 14px; line-height: 1.55; color: var(--ink-2); max-width: 70ch; }
+
+/* ---------- empty state ---------- */
+.empty { padding: 56px 24px; text-align: center; color: var(--muted); font-size: 15px; border: 1px dashed var(--line-2); border-radius: var(--radius); }
+.empty span { display: block; font-size: 13px; margin-top: 6px; }
+
+/* ---------- table ---------- */
+.table-wrap { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); }
+table.table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.table th { text-align: left; font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.table td { padding: 9px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.table tr:last-child td { border-bottom: 0; }
+.table tbody tr:hover td { background: var(--accent-wash); }
+.table tr.is-current td { background: var(--accent-wash); }
+.table tr.is-current td:first-child { box-shadow: inset 2px 0 0 var(--accent); }
+.table .t { font-weight: 500; }
+.table .a { color: var(--muted); font-size: 12px; }
+.table td.num, .table th.num { text-align: right; }
+.table button.link { color: var(--ink); text-align: left; }
+.table button.link:hover { color: var(--accent); }
+.table th.sortable button { display: inline-flex; align-items: center; gap: 6px; font: inherit; letter-spacing: inherit; text-transform: inherit; color: inherit; }
+.table th.sortable button::after { content: ""; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-top: 5px solid var(--line-2); }
+.table th[aria-sort="ascending"] button::after { border-top: 0; border-bottom: 5px solid var(--ink); }
+.table th[aria-sort="descending"] button::after { border-top-color: var(--ink); }
+.table th.sortable button:hover { color: var(--ink); }
+
+/* ---------- charts ---------- */
+.charts { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; }
+.chart { padding: 20px 22px 18px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); }
+.chart h3 { font-size: 15px; font-weight: 500; }
+.chart .sub { margin: 3px 0 16px; font-size: 12px; color: var(--muted); }
+.bars { display: flex; flex-direction: column; gap: 10px; position: relative; }
+.bar-row { display: grid; grid-template-columns: 60px minmax(0, 1fr) 56px; align-items: center; gap: 12px; font-size: 13px; }
+.bar-row .k { color: var(--ink-2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.bar-track { display: flex; position: relative; height: 18px; gap: 2px; }
+.bar-fill { display: block; height: 100%; width: 0; background: var(--accent); border-radius: 0 4px 4px 0; transition: width 400ms ease; }
+.bar-fill.muted { background: var(--line-2); }
+.bar-fill.warn { background: var(--warn); }
+.bar-fill.ok { background: var(--ok); }
+.bar-fill.bad { background: var(--bad); }
+.bar-track .bar-fill + .bar-fill { border-radius: 0; }
+.bar-track .bar-fill:last-child { border-radius: 0 4px 4px 0; }
+.bar-track .bar-fill:first-child:not(:last-child) { border-radius: 0; }
+.bar-row .v { color: var(--ink); }
+.bar-row .v small { color: var(--muted); margin-left: 4px; }
+.bars.wide-key .bar-row { grid-template-columns: 140px minmax(0, 1fr) 56px; }
+.bars.wide-key .expect-wrap { left: 152px; }
+.expect-wrap { position: absolute; left: 72px; right: 68px; top: 0; bottom: 18px; pointer-events: none; }
+.expect { position: absolute; top: -6px; bottom: -6px; width: 0; border-left: 1px dashed var(--ink-2); }
+.expect-label { position: absolute; bottom: -18px; transform: translateX(-50%); font-size: 10px; color: var(--muted); white-space: nowrap; }
+.bars.has-expect { padding-bottom: 18px; }
+
+/* ---------- ladder: ordered levels with a count ---------- */
+.ladder { display: flex; flex-direction: column; gap: 4px; }
+.rung { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 12px; padding: 9px 12px; border-left: 3px solid var(--rung, var(--line-2)); background: var(--surface); border-radius: 0 var(--radius) var(--radius) 0; }
+.rung .lab { font-size: 14px; }
+.rung .lab small { display: block; color: var(--muted); font-size: 12px; margin-top: 1px; }
+.rung .n { font-size: 15px; font-weight: 500; }
+.rung .track { grid-column: 1 / -1; height: 4px; background: var(--surface-2); border-radius: 2px; }
+.rung .track i { display: block; height: 100%; background: var(--rung, var(--line-2)); border-radius: 2px; }
+.rung.good { --rung: var(--ok); }
+.rung.caution { --rung: var(--warn); }
+.rung.bad { --rung: var(--bad); }
+.rung.accent { --rung: var(--accent); }
+
+/* ---------- heatmap grid ---------- */
+.heat { border-collapse: separate; border-spacing: 3px; font-size: 13px; font-variant-numeric: tabular-nums; }
+.heat th { font-size: 11px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); padding: 4px 8px; text-align: center; }
+.heat th[scope="row"] { text-align: right; }
+.heat td { width: 48px; height: 38px; text-align: center; border-radius: 3px; color: var(--ink); background: color-mix(in srgb, var(--accent) calc(var(--v, 0) * 100%), var(--surface-2)); }
+.heat td.hot { color: var(--accent-ink); }
+.heat td.diag { box-shadow: inset 0 0 0 2px var(--ok); }
+.heat td.z { color: var(--muted); }
+
+/* ---------- progress ---------- */
+.progress { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: 12px; font-size: 13px; }
+.progress .track { height: 6px; background: var(--surface-2); border-radius: 3px; overflow: hidden; }
+.progress .track i { display: block; height: 100%; background: var(--accent); border-radius: 3px; }
+.progress.good .track i { background: var(--ok); }
+.progress.caution .track i { background: var(--warn); }
+.progress .v { color: var(--ink-2); }
+
+/* ---------- tooltip ---------- */
+.tip {
+  position: fixed; z-index: 60; pointer-events: none;
+  background: var(--ink); color: var(--bg);
+  border-radius: var(--radius); box-shadow: var(--shadow);
+  padding: 6px 10px; font-size: 12px; line-height: 1.45; max-width: 260px;
+  opacity: 0; transition: opacity 120ms ease;
+}
+.tip.on { opacity: 1; }
+.tip b { font-weight: 500; }
+
+/* ---------- folds ---------- */
+.folds { display: flex; flex-direction: column; border-top: 1px solid var(--line); }
+details.fold { border-bottom: 1px solid var(--line); }
+details.fold > summary {
+  list-style: none;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 0;
+  cursor: pointer;
+  font-size: 15px; font-weight: 500;
+}
+details.fold > summary::-webkit-details-marker { display: none; }
+details.fold > summary .sum-right { font-size: 12px; font-weight: 400; color: var(--muted); display: flex; align-items: center; gap: 10px; }
+details.fold > summary .sum-right::after { content: "+"; font-size: 18px; line-height: 1; color: var(--muted); width: 14px; text-align: center; }
+details.fold[open] > summary .sum-right::after { content: "–"; }
+.fold-body { padding: 4px 0 28px; }
+.fold-grid { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 32px 48px; }
+.block + .block { margin-top: 22px; }
+.block .eyebrow { display: block; margin-bottom: 8px; }
+.block p, .block li { font-size: 14px; line-height: 1.6; color: var(--ink-2); }
+.block ul { margin: 0; padding-left: 18px; }
+.block li + li { margin-top: 6px; }
+.block.prose { max-width: 72ch; }
+
+/* ---------- code: same family, smaller, on surface-2 ---------- */
+code, pre { font-family: var(--font); font-size: 13px; }
+code { padding: 1px 6px; border-radius: 3px; background: var(--surface-2); color: var(--ink); }
+pre { margin: 0; padding: 14px 16px; line-height: 1.55; overflow-x: auto; background: var(--surface-2); border: 1px solid var(--line); border-radius: var(--radius); white-space: pre-wrap; overflow-wrap: anywhere; }
+pre code { padding: 0; background: none; }
+.code-pair { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 20px; }
+.code-pair .eyebrow { display: block; margin-bottom: 8px; }
+.code-pair .proposed pre { border-color: var(--accent); }
+
+/* ---------- controls ---------- */
+.btn { display: inline-flex; align-items: center; gap: 8px; padding: 7px 14px; border-radius: var(--radius); font-size: 13px; font-weight: 500; background: var(--accent); color: var(--accent-ink); transition: filter 120ms ease; }
+.btn:hover { filter: brightness(1.08); text-decoration: none; }
+.btn.ghost { background: var(--surface); color: var(--ink-2); border: 1px solid var(--line-2); }
+.btn.ghost:hover { background: var(--surface-2); color: var(--ink); filter: none; }
+.btn[disabled] { opacity: 0.5; cursor: not-allowed; }
+.search, .select {
+  padding: 8px 12px;
+  border: 1px solid var(--line-2);
+  border-radius: var(--radius);
+  background: var(--bg);
+  color: var(--ink);
+  font-size: 13px;
+}
+.list-head .search { width: 100%; }
+.search::placeholder { color: var(--muted); }
+.filter-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.filter-row .search { flex: 1 1 220px; }
+.filter-row .count { font-size: 12px; color: var(--muted); margin-left: auto; }
+
+/* ---------- page foot: what this page is and is not ---------- */
+.page-foot { margin-top: 56px; padding-top: 20px; border-top: 1px solid var(--line-2); color: var(--ink-2); font-size: 14px; line-height: 1.6; max-width: 74ch; }
+.page-foot h3 { font-size: 15px; margin-bottom: 8px; color: var(--ink); }
+.page-foot p + p { margin-top: 0.7em; }
+.page-foot strong { font-weight: 500; color: var(--ink); }
+
+/* ---------- containers ---------- */
+.wrap { max-width: 1180px; margin: 0 auto; padding: 40px 40px 96px; }
+/* Sections inside .wrap stack in a .stack; nothing inside it needs a margin. */
+.stack { display: flex; flex-direction: column; gap: 40px; }
+.stack > .page-foot { margin-top: 16px; }
+
+/* ---------- responsive: one breakpoint ---------- */
+@media (max-width: 1100px) {
+  .top { grid-template-columns: auto 1fr; height: auto; padding: 10px 16px; gap: 12px; }
+  .top-right { grid-column: 2; grid-row: 1; }
+  .top-meta { display: none; }
+  .tabs { grid-column: 1 / -1; flex-wrap: wrap; }
+  .split { grid-template-columns: 1fr; }
+  .list { position: static; height: auto; max-height: 40vh; border-right: 0; border-bottom: 1px solid var(--line); }
+  .detail { padding: 24px 20px 64px; }
+  .verdict-panel, .fold-grid, .lead, .sec { grid-template-columns: 1fr; }
+  .sec-head { position: static; }
+  .chips { justify-content: flex-start; }
+  .wrap { padding: 28px 20px 72px; }
+}
+
+/* ---------- guide-only styles: captions and demo frames, not part of the system ---------- */
+.guide-section { scroll-margin-top: 72px; }
+.guide-section > .wrap { padding-bottom: 24px; }
+.guide-title { font-size: 24px; font-weight: 500; letter-spacing: -0.02em; font-stretch: 112%; padding-top: 8px; }
+.guide-sub { font-size: 14px; color: var(--muted); margin: 4px 0 24px; max-width: 64ch; }
+.demo { padding: 24px; border: 1px dashed var(--line-2); border-radius: var(--radius); }
+.demo + .demo, .demo-cap + .demo { margin-top: 12px; }
+.demo-cap { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: 6px 16px; margin-top: 28px; margin-bottom: 10px; }
+.demo-cap:first-child { margin-top: 0; }
+.demo-cap h3 { font-size: 15px; font-weight: 500; }
+.demo-cap .cls { font-size: 12px; color: var(--muted); }
+.demo-cap .cls code { font-size: 12px; }
+.demo-note { font-size: 13px; color: var(--ink-2); margin-top: 10px; max-width: 70ch; }
+.demo .top { position: static; border: 1px solid var(--line); border-radius: var(--radius); }
+.demo-split .split { min-height: 0; height: 520px; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
+.demo-split .list { position: static; height: 520px; }
+.demo-split .detail { overflow-y: auto; height: 520px; padding: 24px 28px 40px; }
+.demo-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px; align-items: start; }
+.sw-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 8px; }
+.sw { border-radius: var(--radius); border: 1px solid var(--line); overflow: hidden; background: var(--surface); }
+.sw i { display: block; height: 44px; }
+.sw b { display: block; padding: 6px 8px 1px; font-size: 11px; font-weight: 500; letter-spacing: 0.04em; text-transform: uppercase; color: var(--muted); }
+.sw span { display: block; padding: 0 8px 7px; font-size: 12px; color: var(--ink-2); font-variant-numeric: tabular-nums; }
+.type-row { display: grid; grid-template-columns: 170px minmax(0, 1fr); gap: 24px; align-items: baseline; padding: 14px 0; border-bottom: 1px solid var(--line); }
+.type-row:last-child { border-bottom: 0; }
+.type-row .spec { font-size: 12px; color: var(--muted); line-height: 1.5; }
+.shape-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 16px; }
+.shape { padding: 16px; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); display: flex; flex-direction: column; gap: 10px; }
+.shape .mark { width: 22px; height: 22px; }
+.shape .mark.caution { transform: rotate(45deg) scale(0.8); }
+.shape b { font-size: 14px; font-weight: 500; }
+.shape span { font-size: 12px; color: var(--muted); }
+.surface-demo { padding: 24px; background: var(--bg); border: 1px solid var(--line); border-radius: var(--radius); }
+.surface-demo .card { max-width: 420px; }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <span class="brand-name">Artifact house style</span>
+    <span class="brand-sub">design-skills · styling-artifacts</span>
+  </div>
+  <nav class="tabs" aria-label="Sections">
+    <a class="tab" href="#foundations">Foundations</a>
+    <a class="tab" href="#chrome">Chrome</a>
+    <a class="tab" href="#cards">Cards</a>
+    <a class="tab" href="#data">Data</a>
+    <a class="tab" href="#prose">Prose</a>
+    <a class="tab" href="#recipes">Recipes</a>
+  </nav>
+  <div class="top-right">
+    <div class="top-meta"><span>plugin <b>design-skills</b></span><span>v<b>1.0.0</b></span></div>
+    <!-- Theme toggle. The button goes in .top-right of the top bar; the script
+     goes at the end of the body. Click flips between light and dark from
+     whatever is in effect, remembers the choice, and keeps the icon honest
+     if the host restamps data-theme after load. -->
+<button class="theme-toggle" id="theme-toggle" aria-label="Switch to dark">
+  <svg class="ic-sun" viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round">
+    <circle cx="10" cy="10" r="3.4"/>
+    <path d="M10 1.8v2M10 16.2v2M18.2 10h-2M3.8 10h-2M15.8 4.2l-1.4 1.4M5.6 14.4l-1.4 1.4M15.8 15.8l-1.4-1.4M5.6 5.6L4.2 4.2"/>
+  </svg>
+  <svg class="ic-moon" viewBox="0 0 20 20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round">
+    <path d="M16.5 12.2A7 7 0 0 1 7.8 3.5a7 7 0 1 0 8.7 8.7Z"/>
+  </svg>
+</button>
+  </div>
+</header>
+
+<main>
+
+<!-- ======================= LEAD ======================= -->
+<section class="wrap" style="padding-bottom: 0">
+  <div class="lead">
+    <div>
+      <div class="eyebrow">Artifact house style</div>
+      <div class="hero-num num">18<small>colour tokens</small></div>
+      <div class="hero-label">make up the whole palette. Every colour on a page comes from this set, in light and in dark.</div>
+      <div class="stat-row">
+        <div class="stat"><div class="v">Archivo</div><div class="l">typeface</div></div>
+        <div class="stat"><div class="v num">1</div><div class="l">accent colour</div></div>
+        <div class="stat"><div class="v num">2</div><div class="l">themes</div></div>
+        <div class="stat"><div class="v num" id="component-count">0</div><div class="l">components on this page</div></div>
+      </div>
+    </div>
+    <div class="reading">
+      <p>This page sets the house style for the HTML artifacts the Data Science and Analytics team publishes: reports, dashboards, run explorers, review and comparison pages. It ships in the <code>design-skills</code> plugin as the <code>styling-artifacts</code> skill. Claude Code loads the skill on its own when it starts choosing fonts, colours or layout for an artifact, so nobody has to ask for it.</p>
+      <p>Everything below is live. The toggle in the top bar switches theme. The palette is rust on paper neutrals, with wine, teal and honey for bad, good and caution, and a warm charcoal for dark mode. The type is Archivo, with its wide cut kept for the largest elements. The numbers are sample values.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= FOUNDATIONS ======================= -->
+<section class="guide-section" id="foundations">
+  <div class="wrap">
+    <h2 class="guide-title">Foundations</h2>
+    <p class="guide-sub">Tokens, type scale, state markers and surfaces. These sections use the side-rail layout: a sticky title and a short note on the left, the material on the right.</p>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="eyebrow">Colour</span>
+        <h2>Tokens</h2>
+        <p class="sec-note">The neutrals carry the page. The accent marks the selected row, the winner ring, the primary bar, the button and the link. The three state pairs mark good, caution and bad.</p>
+        <p class="sec-note">A page does not add colours. A subject with five severity levels maps them onto these three states and neutral.</p>
+      </div>
+      <div>
+        <div class="sw-grid" id="swatches"></div>
+        <p class="demo-note">The hex values are read from the rendered page, so they change with the toggle. Every text colour clears 4.5:1 on the surfaces it sits on, in both themes.</p>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="eyebrow">Type</span>
+        <h2>Archivo</h2>
+        <p class="sec-note">Archivo is the only typeface. Hierarchy comes from weight and width: headings are 500 with slightly tight tracking, subtitles and the hero number are 300.</p>
+        <p class="sec-note">The wide cut (<code>font-stretch: 112%</code>) is used on elements 22px and larger. Below that, the normal width keeps tables dense.</p>
+      </div>
+      <div>
+        <div class="type-row"><div class="spec">Page title<br>30px · 500 · wide</div><div class="page-title">The Hollow Vale</div></div>
+        <div class="type-row"><div class="spec">Hero number<br>64px · 300 · wide</div><div class="hero-num num">1,148<small>titles</small></div></div>
+        <div class="type-row"><div class="spec">Verdict answer<br>22px · 500 · wide · accent</div><div class="verdict-answer"><span class="big">Variant 0</span></div></div>
+        <div class="type-row"><div class="spec">Section title<br>18px · 500</div><div class="section-title" style="margin:0">Where the misses are</div></div>
+        <div class="type-row"><div class="spec">Subtitle<br>16px · 300</div><div class="page-sub" style="margin:0">Anna Weston</div></div>
+        <div class="type-row"><div class="spec">Body<br>15px · 400 · 1.5</div><div style="max-width:62ch">Misses concentrate almost entirely on the titles the screen said least about, which is the case for reading those first. <strong>Strong is 500 in UI text</strong> and 700 inside quoted copy.</div></div>
+        <div class="type-row"><div class="spec">Small<br>13px · 400</div><div style="font-size:13px;color:var(--ink-2);max-width:62ch">Used for table cells, chart keys, card footers and notes.</div></div>
+        <div class="type-row"><div class="spec">Eyebrow<br>11px · 500 · caps · 0.08em</div><div class="eyebrow">Judge's note</div></div>
+        <div class="type-row"><div class="spec">Width<br>100% against 112%</div><div style="font-size:30px;font-weight:500;letter-spacing:-0.015em;line-height:1.2"><span style="font-stretch:100%">Normal width</span> &nbsp;<span style="color:var(--line-2)">/</span>&nbsp; <span style="font-stretch:112%">Wide for display</span></div></div>
+        <div class="type-row"><div class="spec">Weights</div><div style="display:flex;flex-wrap:wrap;gap:8px 28px;font-size:22px;line-height:1.2"><span style="font-weight:300">Light 300</span><span style="font-weight:400">Regular 400</span><span style="font-weight:500">Medium 500</span><span style="font-weight:700">Bold 700</span></div></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="eyebrow">State</span>
+        <h2>State markers</h2>
+        <p class="sec-note">Each state has a shape as well as a colour: good is a filled circle, caution a diamond, bad a filled square, neutral an outlined circle. Chips, table marks, banners and legends all use them, so the page still reads in greyscale or to a colour-blind reader.</p>
+      </div>
+      <div>
+        <div class="shape-row">
+          <div class="shape"><span class="mark good"></span><b>Good</b><span><code>--ok</code> · survives, passes, clean</span></div>
+          <div class="shape"><span class="mark caution"></span><b>Caution</b><span><code>--warn</code> · below the bar, assess, partial</span></div>
+          <div class="shape"><span class="mark bad"></span><b>Bad</b><span><code>--bad</code> · eliminated, blocked, failed</span></div>
+          <div class="shape"><span class="mark neutral"></span><b>Neutral</b><span>outlined muted · unclear, absent, not run</span></div>
+        </div>
+        <div class="demo-cap"><h3>Mapping a domain ladder</h3><span class="cls">collapse anything longer than four rungs</span></div>
+        <div class="table-wrap"><table class="table">
+          <thead><tr><th>Subject says</th><th>House state</th><th>Why</th></tr></thead>
+          <tbody>
+            <tr><td>Critical, blocked, eliminated, failed</td><td><span class="state bad">bad</span></td><td>Stops the reader; needs a decision</td></tr>
+            <tr><td>Important, assess, below the bar, partial</td><td><span class="state caution">caution</span></td><td>Needs a second look</td></tr>
+            <tr><td>Survives, passes, clean, complete</td><td><span class="state good">good</span></td><td>Nothing to do</td></tr>
+            <tr><td>Suggestion, unclear, not run, no data</td><td><span class="state neutral">neutral</span></td><td>Lowest rungs and missing data</td></tr>
+          </tbody>
+        </table></div>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="eyebrow">Surfaces</span>
+        <h2>Surfaces</h2>
+        <p class="sec-note">The page sits on <code>--bg</code>. Cards, the top bar and tables sit on <code>--surface</code> with a 1px <code>--line</code> border, a 6px radius and the house shadow. Card footers, code and notes sit on <code>--surface-2</code>. Selected and hovered rows take <code>--accent-wash</code>.</p>
+      </div>
+      <div class="surface-demo">
+        <article class="card">
+          <div class="card-head"><div class="card-id"><span class="slot-name">surface</span><span class="angle">A card on the page ground</span></div></div>
+          <div class="copy"><p>Border <code>--line</code>, radius <code>--radius</code>, shadow <code>--shadow</code>.</p></div>
+          <div class="card-foot"><div class="card-foot-head"><span class="eyebrow">surface-2</span></div>Footers, notes and code sit one level down.</div>
+        </article>
+      </div>
+    </div>
+
+    <div class="sec">
+      <div class="sec-head">
+        <span class="eyebrow">Themes</span>
+        <h2>Light and dark</h2>
+        <p class="sec-note">A viewer arrives in one of three states: light or dark stamped on the root by the host, or nothing, in which case the operating system decides. The stylesheet has a token block for each.</p>
+        <p class="sec-note">The toggle at the right of the top bar switches from whatever is showing and saves the choice in <code>localStorage</code> as <code>dsa-theme</code>. With nothing saved, the page follows the host.</p>
+      </div>
+      <div>
+        <pre><code>:root { …light tokens… }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { …dark tokens… }
+}
+:root[data-theme="dark"] { …dark tokens… }</code></pre>
+        <p class="demo-note">Paste <code>tokens.css</code> in full: it has all three blocks and the base styles. The boot script in <code>head.html</code> stamps a saved choice before first paint, so the page does not flash. The button and its script are in <code>theme-toggle.html</code>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= CHROME ======================= -->
+<section class="guide-section" id="chrome">
+  <div class="wrap">
+    <h2 class="guide-title">Chrome and controls</h2>
+    <p class="guide-sub">Navigation, the list and detail layout, and form controls.</p>
+
+    <div class="demo-cap"><h3>Top bar with pill tabs</h3><span class="cls"><code>.top</code> · <code>.brand</code> · <code>.tabs</code> › <code>.tab</code> · <code>.top-right</code> › <code>.top-meta</code> + toggle</span></div>
+    <div class="demo">
+      <header class="top">
+        <div class="brand"><span class="brand-name">Blurb Lab Verdicts</span><span class="brand-sub">43 runs · 20 Aug</span></div>
+        <nav class="tabs" role="tablist" aria-label="Demo sections">
+          <button class="tab" role="tab" aria-selected="true">Overview</button>
+          <button class="tab" role="tab" aria-selected="false">Fiction<span class="count num">28</span></button>
+          <button class="tab" role="tab" aria-selected="false">Non-fiction<span class="count num">15</span></button>
+        </nav>
+        <div class="top-right"><div class="top-meta"><span>writer <b>gpt-5.6</b></span><span>judge <b>sonnet</b></span></div></div>
+      </header>
+    </div>
+    <p class="demo-note">Sticky, 56px, three columns: brand on the left, tabs in the centre, run metadata and the toggle on the right. The selected tab inverts to ink on bg, and counts sit inside the tab at a lighter weight. A page with a single view has no tab bar, only a page head.</p>
+
+    <div class="demo-grid" style="margin-top:28px">
+      <div>
+        <div class="demo-cap"><h3>Segmented control</h3><span class="cls"><code>.seg</code> › <code>button[aria-selected]</code></span></div>
+        <div class="demo">
+          <div class="seg" role="tablist" aria-label="Unit">
+            <button role="tab" aria-selected="true">Counts</button>
+            <button role="tab" aria-selected="false">Share</button>
+            <button role="tab" aria-selected="false">Per title</button>
+          </div>
+        </div>
+        <p class="demo-note">Switches between two to four views inside a panel. Navigation between pages stays in the top bar.</p>
+      </div>
+      <div>
+        <div class="demo-cap"><h3>Rail nav</h3><span class="cls"><code>.rail-nav</code> › <code>a</code> + <code>.count</code></span></div>
+        <div class="demo">
+          <nav class="rail-nav" style="max-width:260px" aria-label="Demo rail">
+            <a href="#chrome" aria-current="true">Flags<span class="count num">7</span></a>
+            <a href="#chrome">Spice<span class="count num">2</span></a>
+            <a href="#chrome">Passages<span class="count num">11</span></a>
+            <a href="#chrome">Working</a>
+          </nav>
+        </div>
+        <p class="demo-note">Links to the sections of a long detail view, sticky beside the content.</p>
+      </div>
+    </div>
+
+    <div class="demo-cap"><h3>Split list + detail</h3><span class="cls"><code>.split</code> › <code>.list</code> (<code>.list-head</code>, <code>.list-items</code> › <code>.list-item</code>) + <code>.detail</code></span></div>
+    <div class="demo-split">
+      <div class="split">
+        <aside class="list">
+          <div class="list-head">
+            <input class="search" type="search" placeholder="Search title, author or ISBN" aria-label="Search demo list">
+            <div class="list-hint"><span>6 books</span><span>↑ ↓ to move</span></div>
+          </div>
+          <ul class="list-items" id="demo-list">
+            <li><button class="list-item" aria-current="true"><span><span class="t">The Hollow Vale</span><span class="a">Anna Weston</span></span><span class="slots"><span class="slot is-on"></span><span class="slot"></span><span class="slot"></span></span></button></li>
+            <li><button class="list-item"><span><span class="t">Always on My Mind</span><span class="a">Carys Green</span></span><span class="slots"><span class="slot is-on"></span><span class="slot"></span><span class="slot"></span></span></button></li>
+            <li><button class="list-item"><span><span class="t">A Note from the Publisher</span><span class="a">Tatamkhulu Afrika</span></span><span class="slots"><span class="slot"></span><span class="slot"></span><span class="slot is-on is-warn"></span></span></button></li>
+            <li><button class="list-item"><span><span class="t">Three Days in June</span><span class="a">Anne Tyler</span></span><span class="slots"><span class="slot"></span><span class="slot is-on"></span><span class="slot"></span></span></button></li>
+            <li><button class="list-item"><span><span class="t">Life Out of Order</span><span class="a">Audrey Niffenegger</span></span><span class="counts"><b class="warn">5</b><b>4</b></span></button></li>
+            <li><button class="list-item"><span><span class="t">The Bat</span><span class="a">Jo Nesbo</span></span><span class="counts"><b class="bad">2</b><b>7</b></span></button></li>
+          </ul>
+        </aside>
+        <article class="detail">
+          <div class="page-head">
+            <div>
+              <h1 class="page-title">The Hollow Vale</h1>
+              <div class="page-sub">Anna Weston</div>
+              <div class="page-ids"><span>ISBN 9780000000001</span><span>work 487176</span></div>
+            </div>
+            <div class="chips"><span class="chip">literary fiction</span><span class="chip">historical</span><span class="chip tone">melancholic</span><span class="chip tone">lyrical</span></div>
+          </div>
+          <div class="verdict-panel">
+            <div class="verdict-answer">
+              <span class="eyebrow">Judge's pick</span>
+              <span class="big">Variant 0</span>
+              <span class="angle">final letter returns</span>
+              <span class="banner caution">every candidate below the bar</span>
+            </div>
+            <div class="verdict-rationale"><span class="eyebrow">Rationale</span><p>Candidate 0 wins because it anchors the whole pitch in one strange, concrete image, which is the kind of specific, slightly odd detail the distinctiveness bar demands, and no other candidate offers an equivalent.</p></div>
+          </div>
+          <div class="cards" style="padding-top:24px">
+            <article class="card is-winner">
+              <div class="card-head"><div class="card-id"><span class="slot-name">Variant 0</span><span class="angle">final letter returns</span></div><span class="tag">Winner</span></div>
+              <div class="copy"><p>Fifty years after Danny vanishes from his life, an old soldier receives news of his death: a small legacy, and a final letter.</p></div>
+              <div class="card-foot"><div class="card-foot-head"><span class="eyebrow">Judge's note</span><span class="state good">survives screen</span></div>Strongest quality is one concrete, slightly strange image.</div>
+            </article>
+            <article class="card">
+              <div class="card-head"><div class="card-id"><span class="slot-name">Variant 1</span><span class="angle">legacy letter</span></div></div>
+              <div class="copy"><p><strong>Fifty years of silence ends with a death notice, a small legacy and a letter that has waited too long.</strong></p></div>
+              <div class="card-foot"><div class="card-foot-head"><span class="eyebrow">Judge's note</span><span class="state bad">eliminated</span></div>Anaphora in the second paragraph, which the screen bans.</div>
+            </article>
+          </div>
+        </article>
+      </div>
+    </div>
+    <p class="demo-note">A 300px sticky list with a search box and keyboard hint, and a detail pane at 32px / 40px padding. The current item takes the accent wash and a 2px accent edge. Each item has a title, a muted second line and, on the right, either a strip of 9px squares (one per sub-item, up to six) or a pair of counts when there are more. The two columns stack below 1100px.</p>
+
+    <div class="demo-cap"><h3>Controls</h3><span class="cls"><code>.btn</code> · <code>.btn.ghost</code> · <code>.search</code> · <code>.select</code> · <code>.filter-row</code></span></div>
+    <div class="demo">
+      <div class="filter-row">
+        <input class="search" type="search" placeholder="Search title or ISBN" aria-label="Search demo">
+        <select class="select" aria-label="Verdict filter"><option>Any verdict</option><option>Has a blocked concept</option><option>Assess only</option><option>Nothing flagged</option></select>
+        <button class="btn">Publish</button>
+        <button class="btn ghost">Export CSV</button>
+        <button class="btn ghost" disabled>Re-run</button>
+        <span class="count num">1,148 of 1,148</span>
+      </div>
+    </div>
+    <p class="demo-note">One primary button per view, labelled with what it does. Inputs sit on <code>--bg</code> with a <code>--line-2</code> border so they look recessed against a surface.</p>
+  </div>
+</section>
+
+<!-- ======================= CARDS ======================= -->
+<section class="guide-section" id="cards">
+  <div class="wrap">
+    <h2 class="guide-title">Heads, cards and callouts</h2>
+    <p class="guide-sub">The lead opens this page and the page head opens the split demo above. The rest of the in-page components are here.</p>
+
+    <div class="demo-cap"><h3>Comparison cards</h3><span class="cls"><code>.cards</code> › <code>.card.is-winner</code> › <code>.card-head</code> · <code>.tag</code> · <code>.copy</code> · <code>.card-foot</code> · <code>.card-meta</code></span></div>
+    <div class="cards">
+      <article class="card is-winner">
+        <div class="card-head"><div class="card-id"><span class="slot-name">Variant 0</span><span class="angle">marriage without privacy</span></div><span class="tag">Winner</span></div>
+        <div class="copy"><p><strong>Anna Weston can hear her husband think.</strong></p><p>Unity calls it the Executive Package: a chip that links two minds, sold as a way to bring a marriage closer. Then his thoughts begin arriving without warning, threaded through her own memories, fears and guilt.</p></div>
+        <div class="card-foot"><div class="card-foot-head"><span class="eyebrow">Judge's note</span><span class="state good">survives screen</span></div>Concrete premise, plain sentences. The named-character detail gives a slightly strange, specific hook.</div>
+        <div class="card-meta"><span class="num">99 words</span><span class="num">7.4 s</span></div>
+      </article>
+      <article class="card">
+        <div class="card-head"><div class="card-id"><span class="slot-name">Variant 1</span><span class="angle">intimacy becomes surveillance</span></div></div>
+        <div class="copy"><p><strong>Anna Weston wants her husband to hear her.</strong></p><p>When Unity offers the Executive Package, Anna hopes the connection will draw her and Elijah back together. Their thoughts will be shared. Their silences will be gone.</p></div>
+        <div class="card-foot"><div class="card-foot-head"><span class="eyebrow">Judge's note</span><span class="state bad">eliminated</span></div>"Their thoughts will be shared. Their silences will be gone." is anaphora, which the screen bans.</div>
+        <div class="card-meta"><span class="num">135 words</span><span class="num">7.3 s</span></div>
+      </article>
+      <article class="card">
+        <div class="card-head"><div class="card-id"><span class="slot-name">Variant 2</span><span class="angle">intimacy becomes surveillance</span></div></div>
+        <div class="copy"><p><strong>Anna Weston wants a marriage with nowhere left to hide.</strong></p><p>Unity's Executive Package promises exactly that. For a while, the closeness feels like a cure for all the silences between them. Then stray memories begin to surface.</p></div>
+        <div class="card-foot"><div class="card-foot-head"><span class="eyebrow">Judge's note</span><span class="state caution">near duplicate</span></div>Same angle as variant 1; the opening line could sit on any cover in the genre.</div>
+        <div class="card-meta"><span class="num">114 words</span><span class="num">8.9 s</span></div>
+      </article>
+    </div>
+    <p class="demo-note">Auto-fit grid, minimum 320px. The winner gets an accent ring and an accent slot name. <code>margin-top: auto</code> pushes the footer to the bottom so the cards in a row line up.</p>
+
+    <div class="demo-grid" style="margin-top:28px">
+      <div>
+        <div class="demo-cap"><h3>Stat tiles</h3><span class="cls"><code>.stat-row</code> › <code>.stat</code> (<code>.good</code> / <code>.caution</code> / <code>.bad</code>)</span></div>
+        <div class="stat-row" style="margin-top:0">
+          <div class="stat"><div class="v num">1,148</div><div class="l">titles screened</div></div>
+          <div class="stat bad"><div class="v num">27%</div><div class="l">of quiet titles carried a miss</div></div>
+          <div class="stat good"><div class="v num">96%</div><div class="l">of flags were real</div></div>
+        </div>
+        <p class="demo-note">The label explains the number in words rather than repeating a field name. Colour the value only when the number is itself a state.</p>
+      </div>
+      <div>
+        <div class="demo-cap"><h3>Key-value grid</h3><span class="cls"><code>.kv</code> › <code>div</code> › <code>.eyebrow</code> + <code>.v</code></span></div>
+        <div class="demo">
+          <div class="kv">
+            <div><span class="eyebrow">Run</span><span class="v num">20260804T091243Z</span></div>
+            <div><span class="eyebrow">Writer</span><span class="v">gpt-5.6-terra</span></div>
+            <div><span class="eyebrow">Judge</span><span class="v">sonnet</span></div>
+            <div><span class="eyebrow">Variants</span><span class="v num">3</span></div>
+          </div>
+        </div>
+        <p class="demo-note">For identifiers, configuration and other short values. Sentences go in a block.</p>
+      </div>
+    </div>
+
+    <div class="demo-cap"><h3>Reference cards</h3><span class="cls"><code>.ref-cards</code> › <code>.ref-card</code> › <code>.ref-title</code> · <code>.ref-meta</code> · <code>.ref-copy</code></span></div>
+    <div class="ref-cards">
+      <article class="ref-card"><div class="ref-title">Three Days in June</div><div class="ref-meta">Anne Tyler · Vintage</div><div class="ref-copy"><p><strong>Weddings aren't just about the happy couple.</strong> It's the day before her daughter's wedding and things are not going well for Gail Baines. First thing, she loses her job (or quits, depending who you ask). Then her ex-husband Max turns up at her door looking for somewhere to stay.</p></div></article>
+      <article class="ref-card"><div class="ref-title">Life Out of Order</div><div class="ref-meta">Audrey Niffenegger · Jonathan Cape</div><div class="ref-copy"><p><strong>Two great loves. A world in chaos.</strong> Alba DeTamble is a time traveler, slipping unpredictably through decades like her father before her. But the hardest thing she carries is a secret: she is in love with two different people.</p></div></article>
+    </div>
+    <p class="demo-note">For material the reader might consult without reading in full. Lighter border, 13px copy, scrolls after 340px.</p>
+
+    <div class="demo-grid" style="margin-top:28px">
+      <div>
+        <div class="demo-cap"><h3>Callout with tag</h3><span class="cls"><code>.callout</code> (<code>.caution</code> …) › <code>.tag-label</code> + <code>p</code></span></div>
+        <div class="callout"><span class="tag-label">what we optimise</span><p><strong>Recall, deliberately, and we pay for it in precision.</strong> An over-flag costs a reviewer a minute. An under-flag reaches a school account. So every unknown resolves toward review.</p></div>
+        <div class="callout caution" style="margin-top:12px"><span class="tag-label">read this honestly</span><p>The scorer errs toward under-rating roughly three times as often as toward over-rating. Lean on the receipts rather than the rung alone when a decision is close.</p></div>
+        <p class="demo-note">A framed statement the reader should not skip. The tag says what kind of statement it is.</p>
+      </div>
+      <div>
+        <div class="demo-cap"><h3>Note</h3><span class="cls"><code>.note</code></span></div>
+        <div class="note">Per-concept rates sit on a handful of judgements each, which is enough to see a concept that is badly wrong and not enough to rank two that are close.</div>
+        <div class="demo-cap"><h3>Banners</h3><span class="cls"><code>.banner.good</code> · <code>.caution</code> · <code>.bad</code> · <code>.neutral</code> · <code>.banner-more</code></span></div>
+        <div style="display:flex;flex-direction:column;gap:8px">
+          <div class="banner good">All 43 runs completed</div>
+          <div class="banner caution">Every candidate below the bar<span class="banner-more">3 of 43 books</span></div>
+          <div class="banner bad">No EPUB in the bucket, recorded as an error</div>
+          <div class="banner neutral">Judge not run for this title</div>
+        </div>
+        <p class="demo-note">A note is an aside. A banner is a one-line state with its marker.</p>
+      </div>
+    </div>
+
+    <div class="demo-cap"><h3>Empty state</h3><span class="cls"><code>.empty</code> › text + <code>span</code></span></div>
+    <div class="empty">Select a title to see its receipts.<span>1,148 screened · 11,803 receipts held</span></div>
+  </div>
+</section>
+
+<!-- ======================= DATA ======================= -->
+<section class="guide-section" id="data">
+  <div class="wrap">
+    <h2 class="guide-title">Data</h2>
+    <p class="guide-sub">Tables and charts. For chart types beyond bars, the bundled <code>dataviz</code> skill applies, with these tokens in place of its palette.</p>
+
+    <div class="demo-cap"><h3>Table with marks, legend and sortable headers</h3><span class="cls"><code>.legend</code> · <code>.table-wrap</code> › <code>table.table</code> › <code>th.sortable</code> · <code>.marks</code> › <code>.mark</code> · <code>tr.is-current</code></span></div>
+    <div class="legend"><span><i class="good"></i>survives</span><span><i class="caution"></i>caution</span><span><i class="bad"></i>eliminated</span><span><i class="neutral"></i>not judged</span><span><i class="accent"></i>winner ring</span></div>
+    <div class="table-wrap"><table class="table" id="demo-table">
+      <thead><tr>
+        <th class="sortable" aria-sort="none"><button data-sort="title">Title</button></th>
+        <th>Verdicts</th>
+        <th class="sortable num" aria-sort="none"><button data-sort="words">Words</button></th>
+        <th class="sortable num" aria-sort="descending"><button data-sort="time">Judge time</button></th>
+        <th>State</th>
+      </tr></thead>
+      <tbody>
+        <tr><td><button class="link"><div class="t">A Note from the Publisher</div><div class="a">Tatamkhulu Afrika</div></button></td><td><span class="marks"><span class="mark good is-win"></span><span class="mark good"></span><span class="mark good"></span></span></td><td class="num">111</td><td class="num">12.9 s</td><td><span class="state good">survives</span></td></tr>
+        <tr class="is-current"><td><button class="link"><div class="t">Always on My Mind</div><div class="a">Carys Green</div></button></td><td><span class="marks"><span class="mark good is-win"></span><span class="mark bad"></span><span class="mark good"></span></span></td><td class="num">99</td><td class="num">8.9 s</td><td><span class="state good">survives</span></td></tr>
+        <tr><td><button class="link"><div class="t">Three Days in June</div><div class="a">Anne Tyler</div></button></td><td><span class="marks"><span class="mark caution"></span><span class="mark good is-win"></span><span class="mark caution"></span></span></td><td class="num">124</td><td class="num">7.4 s</td><td><span class="state caution">below the bar</span></td></tr>
+        <tr><td><button class="link"><div class="t">The Bat</div><div class="a">Jo Nesbo</div></button></td><td><span class="marks"><span class="mark bad"></span><span class="mark bad"></span><span class="mark neutral"></span></span></td><td class="num">87</td><td class="num">6.1 s</td><td><span class="state bad">eliminated</span></td></tr>
+        <tr><td><button class="link"><div class="t">Life Out of Order</div><div class="a">Audrey Niffenegger</div></button></td><td><span class="marks"><span class="mark neutral"></span><span class="mark neutral"></span><span class="mark neutral"></span></span></td><td class="num">0</td><td class="num">–</td><td><span class="state neutral">not judged</span></td></tr>
+      </tbody>
+    </table></div>
+    <p class="demo-note">13px text, 11px uppercase headers, accent wash on hover, no border on the last row. Sortable headers carry <code>aria-sort</code> and a small triangle; click one above to try it. Cells that navigate are buttons. Digit columns are right-aligned with <code>.num</code>. A legend goes above any table or chart that uses marks.</p>
+
+    <div class="charts" style="margin-top:28px">
+      <div class="chart">
+        <h3>Winning slot</h3>
+        <div class="sub">all 43 books · dashed line is the expected share</div>
+        <div class="bars has-expect" id="demo-bars">
+          <div class="expect-wrap"><span class="expect" style="left:33.3%"></span><span class="expect-label" style="left:33.3%">33% expected</span></div>
+          <div class="bar-row" data-tip="31 of 43 books · 72%"><span class="k">Variant 0</span><span class="bar-track"><span class="bar-fill" style="width:72%"></span></span><span class="v num">31<small>72%</small></span></div>
+          <div class="bar-row" data-tip="7 of 43 books · 16%"><span class="k">Variant 1</span><span class="bar-track"><span class="bar-fill muted" style="width:16%"></span></span><span class="v num">7<small>16%</small></span></div>
+          <div class="bar-row" data-tip="5 of 43 books · 12%"><span class="k">Variant 2</span><span class="bar-track"><span class="bar-fill muted" style="width:12%"></span></span><span class="v num">5<small>12%</small></span></div>
+        </div>
+      </div>
+      <div class="chart">
+        <h3>What each concept's output is made of</h3>
+        <div class="sub">flags judged · stacked by what the judge found</div>
+        <div class="legend" style="margin-top:-6px"><span><i class="good"></i>worth raising</span><span><i class="caution"></i>real, let go</span><span><i class="muted"></i>not in the book</span></div>
+        <div class="bars wide-key">
+          <div class="bar-row" data-tip="alcohol · 41 worth raising, 9 let go, 3 not in the book"><span class="k">alcohol</span><span class="bar-track"><span class="bar-fill ok" style="width:62%"></span><span class="bar-fill warn" style="width:18%"></span><span class="bar-fill muted" style="width:8%"></span></span><span class="v num">53</span></div>
+          <div class="bar-row" data-tip="religion · 22 worth raising, 14 let go, 6 not in the book"><span class="k">religion</span><span class="bar-track"><span class="bar-fill ok" style="width:36%"></span><span class="bar-fill warn" style="width:24%"></span><span class="bar-fill muted" style="width:12%"></span></span><span class="v num">42</span></div>
+          <div class="bar-row" data-tip="protest · 6 worth raising, 19 let go, 11 not in the book"><span class="k">protest</span><span class="bar-track"><span class="bar-fill ok" style="width:10%"></span><span class="bar-fill warn" style="width:32%"></span><span class="bar-fill muted" style="width:20%"></span></span><span class="v num">36</span></div>
+          <div class="bar-row" data-tip="magic · 12 worth raising, 4 let go, 2 not in the book"><span class="k">magic</span><span class="bar-track"><span class="bar-fill ok" style="width:24%"></span><span class="bar-fill warn" style="width:8%"></span><span class="bar-fill muted" style="width:4%"></span></span><span class="v num">18</span></div>
+        </div>
+      </div>
+    </div>
+    <p class="demo-note"><code>.chart</code> › <code>h3</code> + <code>.sub</code> + <code>.bars</code> › <code>.bar-row</code> (60px key, track, 56px value). Fills are accent by default, <code>.muted</code> for a baseline category, and the state classes for state. Several fills in one track stack. An expected value is a dashed <code>.expect</code> line inside <code>.expect-wrap</code>. Every row carries a <code>data-tip</code> or <code>title</code> with the underlying counts; hover a row to see it.</p>
+
+    <div class="demo-grid" style="margin-top:28px">
+      <div>
+        <div class="demo-cap"><h3>Ladder</h3><span class="cls"><code>.ladder</code> › <code>.rung</code> (<code>.good</code> · <code>.caution</code> · <code>.bad</code> · <code>.accent</code>) › <code>.lab</code> + <code>.n</code> + <code>.track</code></span></div>
+        <div class="ladder">
+          <div class="rung"><span class="lab">Clean<small>nothing found, coverage complete</small></span><span class="n num">412</span><span class="track"><i style="width:36%"></i></span></div>
+          <div class="rung good"><span class="lab">Sweet<small>attraction, nothing physical</small></span><span class="n num">388</span><span class="track"><i style="width:34%"></i></span></div>
+          <div class="rung caution"><span class="lab">On-page, non-graphic</span><span class="n num">211</span><span class="track"><i style="width:18%"></i></span></div>
+          <div class="rung caution"><span class="lab">On-page, graphic</span><span class="n num">96</span><span class="track"><i style="width:8%"></i></span></div>
+          <div class="rung bad"><span class="lab">Explicit</span><span class="n num">41</span><span class="track"><i style="width:4%"></i></span></div>
+        </div>
+        <p class="demo-note">Ordered levels, each with a count. The left border shows the level's state and the track shows its share.</p>
+      </div>
+      <div>
+        <div class="demo-cap"><h3>Heatmap grid</h3><span class="cls"><code>table.heat</code> › <code>td[style="--v: 0.6"]</code> · <code>.diag</code> · <code>.hot</code> · <code>.z</code></span></div>
+        <div style="overflow-x:auto">
+          <table class="heat" aria-label="Predicted against true rung">
+            <thead><tr><th></th><th>Pred 0</th><th>Pred 1</th><th>Pred 2</th><th>Pred 3</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">True 0</th><td class="diag hot" style="--v:.9">18</td><td style="--v:.15">3</td><td class="z">0</td><td class="z">0</td></tr>
+              <tr><th scope="row">True 1</th><td style="--v:.3">6</td><td class="diag hot" style="--v:.7">14</td><td style="--v:.1">2</td><td class="z">0</td></tr>
+              <tr><th scope="row">True 2</th><td style="--v:.05">1</td><td style="--v:.35">7</td><td class="diag" style="--v:.45">9</td><td style="--v:.1">2</td></tr>
+              <tr><th scope="row">True 3</th><td class="z">0</td><td style="--v:.05">1</td><td style="--v:.25">5</td><td class="diag" style="--v:.4">8</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="demo-note">Each cell sets <code>--v</code> to a fraction, which mixes the accent into <code>--surface-2</code>. Outline the cells that matter (here the diagonal) instead of giving them a second colour.</p>
+        <div class="demo-cap"><h3>Progress</h3><span class="cls"><code>.progress</code> (<code>.good</code> · <code>.caution</code>) › <code>.track</code> › <code>i</code> + <code>.v</code></span></div>
+        <div style="display:flex;flex-direction:column;gap:10px">
+          <div class="progress"><span class="track"><i style="width:78%"></i></span><span class="v num">896 of 1,148 indexed</span></div>
+          <div class="progress good"><span class="track"><i style="width:100%"></i></span><span class="v num">43 of 43 judged</span></div>
+          <div class="progress caution"><span class="track"><i style="width:31%"></i></span><span class="v num">coverage 31%</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= PROSE ======================= -->
+<section class="guide-section" id="prose">
+  <div class="wrap">
+    <h2 class="guide-title">Prose, folds and code</h2>
+    <p class="guide-sub">Running copy, code, and the context that folds away until it is needed.</p>
+
+    <div class="demo-grid">
+      <div>
+        <div class="demo-cap"><h3>Section heading and running copy</h3><span class="cls"><code>.section-title</code> + <code>.section-sub</code> · <code>.reading</code></span></div>
+        <h3 class="section-title">Where the misses are</h3>
+        <div class="section-sub">49 titles the screen had been quiet about, read in full</div>
+        <div class="reading"><p>Misses concentrate almost entirely on the titles the screen said least about, which is the case for reading those first. On a title already blocked on four concepts, a fifth missed one changes nothing: a reviewer is looking at it anyway.</p><p>Absence of a flag on this page is not evidence of absence in the book.</p></div>
+        <p class="demo-note">Copy is capped at 64ch. In a lead, it says what the numbers show and where they stop.</p>
+      </div>
+      <div>
+        <div class="demo-cap"><h3>Code and code pair</h3><span class="cls"><code>code</code> · <code>pre</code> · <code>.code-pair</code> › <code>.proposed</code></span></div>
+        <div class="code-pair">
+          <div><span class="eyebrow">Current</span><pre><code>if user:
+    if user.is_active:
+        do_thing()</code></pre></div>
+          <div class="proposed"><span class="eyebrow">Suggested</span><pre><code>if not user or not user.is_active:
+    raise ValueError("No active user")
+do_thing()</code></pre></div>
+        </div>
+        <p class="demo-note">Code uses the same family at 13px on <code>--surface-2</code>, so surface and size tell it apart rather than a monospace face. The proposed column has the accent border.</p>
+      </div>
+    </div>
+
+    <div class="demo-cap"><h3>Folds</h3><span class="cls"><code>.folds</code> › <code>details.fold</code> › <code>summary</code> + <code>.sum-right</code> · <code>.fold-body</code> › <code>.fold-grid</code> › <code>.block</code></span></div>
+    <div class="folds">
+      <details class="fold" open>
+        <summary>Book context<span class="sum-right">synopsis, themes, tone</span></summary>
+        <div class="fold-body"><div class="fold-grid">
+          <div class="block prose"><span class="eyebrow">Synopsis</span><p>A first-person elderly narrator receives news that a man from his wartime past has died and left him a small legacy after fifty years of silence. Prompted by the letter, he recalls being captured in North Africa, enduring POW camps, and forming a deep, fraught attachment to Danny.</p></div>
+          <div>
+            <div class="block"><span class="eyebrow">Themes</span><ul><li>memory and letters</li><li>war captivity</li><li>a failed promise to reunite</li></ul></div>
+            <div class="block"><span class="eyebrow">Tone</span><p>melancholic, introspective, lyrical</p></div>
+          </div>
+        </div></div>
+      </details>
+      <details class="fold">
+        <summary>Run configuration<span class="sum-right">writer, judge, prompts</span></summary>
+        <div class="fold-body"><div class="kv">
+          <div><span class="eyebrow">Writer</span><span class="v">gpt-5.6-terra</span></div>
+          <div><span class="eyebrow">Judge</span><span class="v">sonnet</span></div>
+          <div><span class="eyebrow">Variants</span><span class="v num">3</span></div>
+          <div><span class="eyebrow">Exemplars</span><span class="v num">3 per book</span></div>
+        </div></div>
+      </details>
+      <details class="fold">
+        <summary>Exemplar blurbs<span class="sum-right">3 references</span></summary>
+        <div class="fold-body"><p class="demo-note" style="margin:0">Reference cards go here.</p></div>
+      </details>
+    </div>
+    <p class="demo-note">For context the reader needs some of the time: inputs, source material, configuration. Label on the left, a muted count or hint on the right, a plus or minus marker. Each fold has its own border.</p>
+  </div>
+</section>
+
+<!-- ======================= RECIPES ======================= -->
+<section class="guide-section" id="recipes">
+  <div class="wrap">
+    <h2 class="guide-title">Recipes</h2>
+    <p class="guide-sub">Pick the layout that matches what the page is for and fill it from the catalogue. When a page needs something that is not here, build it from the same tokens.</p>
+    <div class="table-wrap"><table class="table">
+      <thead><tr><th>Page's job</th><th>Composition</th><th>Seen in</th></tr></thead>
+      <tbody>
+        <tr><td class="t">Report one outcome and its reasons</td><td>page head → verdict panel → comparison cards → folds for context</td><td class="a">the split demo's detail pane</td></tr>
+        <tr><td class="t">Let the reader browse many items</td><td>top bar with pill tabs → split list + detail, the row above inside each detail</td><td class="a">Chrome</td></tr>
+        <tr><td class="t">Summarise a run or batch</td><td>lead (hero number + stat tiles beside a reading) → charts → table with legend</td><td class="a">the top of this page, then Data</td></tr>
+        <tr><td class="t">Explain how something works</td><td>side-rail sections: sticky title and framing prose beside each figure, card or table</td><td class="a">Foundations</td></tr>
+        <tr><td class="t">Overview plus browse</td><td>pill tabs: Overview, then one tab per item group; hash router, <code>#tab/item-id</code></td><td class="a">Blurb Lab Verdicts</td></tr>
+      </tbody>
+    </table></div>
+
+    <div class="page-foot">
+      <h3>About this page</h3>
+      <p>This page ships with the <strong>styling-artifacts</strong> skill. Every component on it is built from the same <code>tokens.css</code> and <code>components.css</code> that a session pastes into a new artifact, so a change to either file shows up here first. Check both themes before changing a token.</p>
+      <p>Artifacts are self-contained pages, so the CSS is inlined into each one rather than imported. <code>components.md</code> has the markup for each piece.</p>
+      <p>The titles, verdicts and numbers are sample values and do not describe a real run.</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<div class="tip" id="tip" role="tooltip"></div>
+
+<script>(function () {
+    const root = document.documentElement;
+    const btn = document.getElementById("theme-toggle");
+    const mq = matchMedia("(prefers-color-scheme: dark)");
+    function effectiveTheme() {
+      if (root.dataset.theme === "dark" || root.dataset.theme === "light") return root.dataset.theme;
+      return mq.matches ? "dark" : "light";
+    }
+    function sync() {
+      const dark = effectiveTheme() === "dark";
+      document.body.classList.toggle("is-dark", dark);
+      btn.setAttribute("aria-label", dark ? "Switch to light" : "Switch to dark");
+      document.dispatchEvent(new CustomEvent("themechange", { detail: { theme: dark ? "dark" : "light" } }));
+    }
+    btn.addEventListener("click", () => {
+      const next = effectiveTheme() === "dark" ? "light" : "dark";
+      root.dataset.theme = next;
+      try { localStorage.setItem("dsa-theme", next); } catch (e) {}
+      sync();
+    });
+    mq.addEventListener("change", sync);
+    new MutationObserver(sync).observe(root, { attributes: true, attributeFilter: ["data-theme"] });
+    sync();
+  })();
+</script>
+<script>
+  /* ---------- guide: swatches read from the rendered tokens ---------- */
+  const TOKENS = ["bg", "surface", "surface-2", "ink", "ink-2", "muted", "line", "line-2", "accent", "accent-ink", "accent-soft", "accent-wash", "ok", "ok-soft", "warn", "warn-soft", "bad", "bad-soft"];
+  function hexOf(name) {
+    const probe = document.createElement("i");
+    probe.style.color = `var(--${name})`;
+    document.body.appendChild(probe);
+    const m = getComputedStyle(probe).color.match(/\d+/g).slice(0, 3).map(Number);
+    probe.remove();
+    return "#" + m.map((n) => n.toString(16).padStart(2, "0")).join("").toUpperCase();
+  }
+  function paintSwatches() {
+    document.getElementById("swatches").innerHTML = TOKENS.map((t) => `<div class="sw"><i style="background:var(--${t})"></i><b>${t}</b><span>${hexOf(t)}</span></div>`).join("");
+  }
+  paintSwatches();
+  document.addEventListener("themechange", paintSwatches);
+
+  /* ---------- guide: count the components on the page ---------- */
+  const COMPONENT_SELECTORS = [".top", ".theme-toggle", ".seg", ".rail-nav", ".split", ".page-head", ".sec", ".lead", ".verdict-panel", ".cards", ".card-foot", ".stat-row", ".kv", ".ref-cards", ".callout", ".note", ".banner", ".empty", ".legend", "table.table", "th.sortable", ".marks", ".state", ".chart", ".expect", ".ladder", "table.heat", ".progress", ".tip", ".folds", "pre", ".code-pair", ".btn", ".search", ".select", ".filter-row", ".page-foot", ".chips", ".tag", ".section-title"];
+  document.getElementById("component-count").textContent = COMPONENT_SELECTORS.filter((s) => document.querySelector(s)).length;
+
+  /* ---------- segmented control and tab demo ---------- */
+  document.querySelectorAll('[role="tablist"]').forEach((list) => {
+    list.addEventListener("click", (e) => {
+      const tab = e.target.closest('[role="tab"]');
+      if (!tab) return;
+      list.querySelectorAll('[role="tab"]').forEach((t) => t.setAttribute("aria-selected", t === tab ? "true" : "false"));
+    });
+  });
+
+  /* ---------- split demo: selecting a list item ---------- */
+  document.getElementById("demo-list").addEventListener("click", (e) => {
+    const item = e.target.closest(".list-item");
+    if (!item) return;
+    document.querySelectorAll("#demo-list .list-item").forEach((li) => li.removeAttribute("aria-current"));
+    item.setAttribute("aria-current", "true");
+  });
+
+  /* ---------- sortable table ---------- */
+  const table = document.getElementById("demo-table");
+  table.querySelectorAll("th.sortable button").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const th = btn.parentElement;
+      const idx = [...th.parentElement.children].indexOf(th);
+      const dir = th.getAttribute("aria-sort") === "ascending" ? "descending" : "ascending";
+      table.querySelectorAll("th[aria-sort]").forEach((h) => h.setAttribute("aria-sort", "none"));
+      th.setAttribute("aria-sort", dir);
+      const rows = [...table.tBodies[0].rows];
+      const val = (r) => r.cells[idx].textContent.trim().replace(/[^\d.]/g, "");
+      const numeric = rows.every((r) => val(r) !== "" || r.cells[idx].textContent.trim() === "–");
+      rows.sort((a, b) => {
+        const x = numeric ? parseFloat(val(a)) || 0 : a.cells[idx].textContent.trim();
+        const y = numeric ? parseFloat(val(b)) || 0 : b.cells[idx].textContent.trim();
+        return (x > y ? 1 : x < y ? -1 : 0) * (dir === "ascending" ? 1 : -1);
+      });
+      rows.forEach((r) => table.tBodies[0].appendChild(r));
+    });
+  });
+
+  /* ---------- tooltip on chart rows ---------- */
+  const tip = document.getElementById("tip");
+  document.querySelectorAll("[data-tip]").forEach((el) => {
+    el.addEventListener("pointerenter", () => { tip.textContent = el.dataset.tip; tip.classList.add("on"); });
+    el.addEventListener("pointermove", (e) => { tip.style.left = Math.min(e.clientX + 14, innerWidth - tip.offsetWidth - 8) + "px"; tip.style.top = (e.clientY + 16) + "px"; });
+    el.addEventListener("pointerleave", () => tip.classList.remove("on"));
+  });
+
+  /* ---------- current tab follows scroll ---------- */
+  const navTabs = [...document.querySelectorAll("header.top nav .tab")];
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach((e) => {
+      if (!e.isIntersecting) return;
+      navTabs.forEach((t) => t.setAttribute("aria-current", t.getAttribute("href") === "#" + e.target.id ? "true" : "false"));
+    });
+  }, { rootMargin: "-30% 0px -60% 0px" });
+  document.querySelectorAll(".guide-section").forEach((s) => io.observe(s));
+</script>
+</body>
+</html>
