@@ -1,15 +1,13 @@
 {
   "name": "productivity-skills",
-  "version": "2.0.0",
-  "description": "Productivity skills for parallel agents, design docs, Confluence documentation, and clear prose",
+  "version": "3.0.0",
+  "description": "Productivity skills for design docs, issue search, Confluence documentation, and clear prose",
   "author": {
     "name": "Inês Pinheiro"
   },
   "keywords": [
     "productivity",
-    "brainstorming",
     "design-docs",
-    "parallel-agents",
     "confluence",
     "documentation",
     "style-guide",

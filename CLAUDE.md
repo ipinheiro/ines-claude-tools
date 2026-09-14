@@ -76,7 +76,7 @@ Before writing a skill, check whether [Superpowers](https://code.claude.com/docs
 
 A layer is justified by a different artefact shape (phased plan directories), stack knowledge the built-in cannot have (Snowflake, dbt, uv), or a step the built-in skips. It is not justified by wanting the guidance in our own words.
 
-When you write a layer, name the skill you defer to in the first paragraph and state what you add. See `workflow-skills:writing-plans` and `code-review-orchestrator:verifying-python-review-feedback`.
+When you write a layer, name the skill you defer to in the first paragraph and state what you add. See `workflow-skills:writing-phased-plans` and `code-review-orchestrator:verifying-python-review-feedback`.
 
 ### Skill structure
 

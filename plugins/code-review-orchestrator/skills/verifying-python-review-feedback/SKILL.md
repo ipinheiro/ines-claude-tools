@@ -88,5 +88,5 @@ When you were wrong, say so in one line and move on: "Verified, you're right. Th
 |-----------|-------|
 | General review discipline | `superpowers:receiving-code-review` |
 | Feedback about type errors | `python-dev:fixing-type-errors`. Never add `# type: ignore` because a reviewer suggested it |
-| Feedback needing several coordinated changes | `workflow-skills:executing-plans` |
-| All feedback addressed | `workflow-skills:finishing-a-development-branch` |
+| Feedback needing several coordinated changes | `workflow-skills:executing-phased-plans` |
+| All feedback addressed | `superpowers:finishing-a-development-branch` |

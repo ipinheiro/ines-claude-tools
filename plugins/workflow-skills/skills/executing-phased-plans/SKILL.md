@@ -8,15 +8,15 @@ Use this when executing a plan **inline in this session**. If the plan is task-d
 
 **The rule: follow the plan exactly, verify every task, stop between batches.**
 
-Announce: "I'm using the executing-plans skill to implement this plan."
+Announce: "I'm using the executing-phased-plans skill to implement this plan."
 
-**No plan?** Use `workflow-skills:writing-plans` first.
+**No plan?** Use `workflow-skills:writing-phased-plans` first.
 
 ## Pre-flight
 
 Complete this before Task 1. It is the part people skip and the part that prevents rework.
 
-**1. Isolated workspace.** Use `workflow-skills:using-git-worktrees`. Never start implementation on `main` without explicit consent.
+**1. Isolated workspace.** Use `superpowers:using-git-worktrees`. In a uv project, set the worktree up with `uv sync`, not `poetry install`. Never start implementation on `main` without explicit consent.
 
 **2. Green baseline.** Run the test suite before changing anything. A failure you inherit will otherwise look like a failure you caused.
 
@@ -30,7 +30,7 @@ Complete this before Task 1. It is the part people skip and the part that preven
 | Test files for three unrelated packages | Dispatch together |
 | Task 4 imports a model defined in Task 3 | Sequential |
 
-If the plan has 5 or more tasks, some are usually parallelizable. Use `productivity-skills:dispatching-parallel-agents` for the batch, issuing all `Agent` calls in one message.
+If the plan has 5 or more tasks, some are usually parallelizable. Use `superpowers:dispatching-parallel-agents` for the batch, issuing all `Agent` calls in one message.
 
 **5. Announce readiness** and only then start:
 
@@ -82,7 +82,7 @@ Next batch: extraction logic, pipeline wiring, integration test.
 
 After every task is done: run the full suite, run the type checker, smoke test the entry point if there is one, and summarise files changed, dependencies added, and any deviation from the plan with its justification.
 
-Then hand off to `/code-review-orchestrator:deep-review` or `/code-review-orchestrator:mr-review`, and `workflow-skills:finishing-a-development-branch`.
+Then hand off to `/code-review-orchestrator:deep-review` or `/code-review-orchestrator:mr-review`, and `superpowers:finishing-a-development-branch`.
 
 ## Stop immediately when
 

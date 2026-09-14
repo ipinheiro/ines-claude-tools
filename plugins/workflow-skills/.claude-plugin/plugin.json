@@ -1,16 +1,13 @@
 {
   "name": "workflow-skills",
-  "version": "1.0.0",
-  "description": "Development workflow skills for code review, git worktrees, TDD",
+  "version": "2.0.0",
+  "description": "Development workflow layers on Superpowers: phased plans and TDD with living docs",
   "author": {
     "name": "Inês Pinheiro"
   },
   "keywords": [
     "workflow",
-    "git",
-    "worktrees",
-    "tdd",
-    "code-review",
-    "plans"
+    "plans",
+    "tdd"
   ]
 }

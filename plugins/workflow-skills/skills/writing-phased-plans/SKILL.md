@@ -8,7 +8,7 @@ description: This skill should be used when the user has a spec, requirements, o
 
 This skill changes one thing: **the plan is a directory of phase files, not a single document**. That is what makes a plan survive across sessions.
 
-Announce: "I'm using the writing-plans skill to create a phased implementation plan."
+Announce: "I'm using the writing-phased-plans skill to create a phased implementation plan."
 
 ## Before you write
 
@@ -42,7 +42,7 @@ A phase is 3 to 5 tasks ending at a checkpoint you can run. Phases exist so that
 # [Feature] implementation plan
 
 > **For agentic workers:** use `superpowers:subagent-driven-development` (a fresh
-> subagent per task) or `workflow-skills:executing-plans` (batched, in-session).
+> subagent per task) or `workflow-skills:executing-phased-plans` (batched, in-session).
 > Work phase files in order. Steps use `- [ ]` for tracking.
 
 **Goal:** [one sentence]
@@ -124,7 +124,7 @@ Plan saved to docs/plans/<feature>/ - 3 phases, 9 tasks.
 Which?
 ```
 
-Subagent-driven uses `superpowers:subagent-driven-development`. Inline uses `workflow-skills:executing-plans`.
+Subagent-driven uses `superpowers:subagent-driven-development`. Inline uses `workflow-skills:executing-phased-plans`.
 
 ## Common mistakes
 
