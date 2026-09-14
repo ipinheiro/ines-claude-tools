@@ -8,7 +8,7 @@
     {
       "name": "python-dev",
       "description": "Python development skills including best practices, FastAPI patterns, testing, type safety auditing, dbt integration, Dagster pipelines",
-      "version": "1.0.1",
+      "version": "2.0.0",
       "author": {
         "name": "Inês Pinheiro"
       },
@@ -18,7 +18,7 @@
     {
       "name": "code-review-orchestrator",
       "description": "Multi-dimensional code review with specialized agents for Python and TypeScript -- code quality, logic verification, type safety, structure, security, concurrency, and React patterns",
-      "version": "1.0.1",
+      "version": "1.0.2",
       "author": {
         "name": "Inês Pinheiro"
       },
@@ -27,8 +27,8 @@
     },
     {
       "name": "workflow-skills",
-      "description": "Development workflow layers on Superpowers: phased plans and TDD with living docs",
-      "version": "2.0.0",
+      "description": "Development workflow layers on Superpowers: phased plans",
+      "version": "3.0.0",
       "author": {
         "name": "Inês Pinheiro"
       },
@@ -57,8 +57,8 @@
     },
     {
       "name": "dev-commands",
-      "description": "Developer utility commands for codebase analysis, branch reports, and session handoffs",
-      "version": "1.0.0",
+      "description": "Developer utility commands for branch reports and session handoffs",
+      "version": "2.0.0",
       "author": {
         "name": "Inês Pinheiro"
       },

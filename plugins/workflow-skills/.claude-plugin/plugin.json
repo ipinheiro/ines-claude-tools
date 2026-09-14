@@ -1,13 +1,12 @@
 {
   "name": "workflow-skills",
-  "version": "2.0.0",
-  "description": "Development workflow layers on Superpowers: phased plans and TDD with living docs",
+  "version": "3.0.0",
+  "description": "Development workflow layers on Superpowers: phased plans",
   "author": {
     "name": "Inês Pinheiro"
   },
   "keywords": [
     "workflow",
-    "plans",
-    "tdd"
+    "plans"
   ]
 }

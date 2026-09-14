@@ -2,8 +2,8 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugins-blueviolet?logo=anthropic&logoColor=white)
 ![Plugins](https://img.shields.io/badge/plugins-8-blue)
-![Skills](https://img.shields.io/badge/skills-20-green)
-![Commands](https://img.shields.io/badge/commands-6-orange)
+![Skills](https://img.shields.io/badge/skills-19-green)
+![Commands](https://img.shields.io/badge/commands-5-orange)
 ![Agents](https://img.shields.io/badge/agents-17-red)
 ![Pine tree approved](https://img.shields.io/badge/%F0%9F%8C%B2-approved-2ea44f)
 
@@ -17,7 +17,7 @@ Verified against Claude Code v2.1.222.
 - [Installation](#installation) - add the marketplace, install plugins, activate
 - [Keeping up to date](#keeping-up-to-date) - auto-update is off by default
 - [Invoking what you installed](#invoking-what-you-installed) - namespacing, and what Claude loads on its own
-- [Command reference](#command-reference) - every command, with [`/branch-report`](#branch-report), [`/analyse`](#analyse) and [`/type-safety-audit`](#type-safety-audit) in detail
+- [Command reference](#command-reference) - every command, with [`/branch-report`](#branch-report) and [`/type-safety-audit`](#type-safety-audit) in detail
 - [Skill workflow](#skill-workflow) - how the workflow skills chain together
 
 **What is in here**
@@ -65,7 +65,7 @@ Everything this marketplace installs, grouped by plugin. Versions come from each
 ```
 ines-claude-tools/                          marketplace: ines-claude-tools
 │
-├── python-dev                     v1.0.1   9 skills · 7 agents · 3 hooks
+├── python-dev                     v2.0.0   9 skills · 7 agents · 2 hooks
 │   ├── skills/
 │   │   ├── python-best-practices           typing, Pydantic, error handling, match dispatch
 │   │   ├── fixing-type-errors              resolve pyright/ty/mypy errors without suppressions
@@ -86,11 +86,10 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │   │   └── environment-coupling-auditor    scattered os.getenv and hardcoded env names
 │   └── hooks/
 │       ├── python-uv-guard.py              PreToolUse: blocks bare `python`, points to uv
-│       ├── ruff-before-add.py              PreToolUse: lints Python files before `git add`
-│       │   └── no-inline-imports.yml       ast-grep rule used by the above
-│       └── skill-detector.py               UserPromptSubmit: injects skill reminders
+│       └── ruff-before-add.py              PreToolUse: lints Python files before `git add`
+│           └── no-inline-imports.yml       ast-grep rule used by the above
 │
-├── code-review-orchestrator       v1.0.1   3 commands · 1 skill · 10 agents
+├── code-review-orchestrator       v1.0.2   3 commands · 1 skill · 10 agents
 │   ├── commands/
 │   │   ├── deep-review                     review uncommitted, staged, or branch changes
 │   │   ├── mr-review                       GitLab MR review producing pasteable comments
@@ -109,17 +108,15 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │       ├── security-reviewer               injection, secrets, authz, path traversal   [all]
 │       └── repo-review-planner             inventory and batching for /repo-review     [all]
 │
-├── dev-commands                   v1.0.0   3 commands
+├── dev-commands                   v2.0.0   2 commands
 │   └── commands/
-│       ├── analyse                         multi-mode analysis for data science codebases
 │       ├── branch-report                   stale branch detection and cleanup commands
 │       └── handoff                         write HANDOFF.md for a fresh session
 │
-├── workflow-skills                v2.0.0   3 skills
+├── workflow-skills                v3.0.0   2 skills
 │   └── skills/
 │       ├── writing-phased-plans            spec becomes a directory of phase files
-│       ├── executing-phased-plans          pre-flight, then batch execution with checkpoints
-│       └── tdd-with-living-docs            TDD plus feature planning and living notes
+│       └── executing-phased-plans          pre-flight, then batch execution with checkpoints
 │
 ├── productivity-skills            v3.0.0   4 skills
 │   └── skills/
@@ -213,7 +210,6 @@ Skills that Claude loads on its own, rather than ones you type, trigger from the
 | `/code-review-orchestrator:deep-review` | Multi-agent review of uncommitted, staged, or branch changes | `docs/reviews/` |
 | `/code-review-orchestrator:mr-review` | Diff-scoped review producing GitLab inline comments | `docs/reviews/mr-review-{branch}-{date}.md` |
 | `/code-review-orchestrator:repo-review` | Dependency-batched review of a whole repo for refactor planning | `docs/reviews/repo-review-{date}.md` |
-| `/dev-commands:analyse [mode]` | Security, performance, and quality analysis for data science code | Markdown or JSON report |
 | `/dev-commands:branch-report [days]` | Stale branches, merge status, cleanup commands | Markdown or JSON report |
 | `/dev-commands:handoff` | Session state for a fresh agent | `HANDOFF.md` |
 
@@ -224,14 +220,6 @@ Skills that Claude loads on its own, rather than ones you type, trigger from the
 ```
 
 Detects staleness against a configurable threshold (default 30 days) and reports merge status against `develop`, `main`, and `master`. For any branch that has diverged from a base branch without being merged, it dispatches a subagent to read the commits and summarise the changes into the report, so you are deciding on described work rather than a branch name.
-
-### `/analyse`
-
-```
-/dev-commands:analyse [mode] [--plan] [--output=path] [--parallel]
-```
-
-Runs ruff, bandit, safety, semgrep, scalene, and memray through `uv run --with`, and dispatches subagents for the analysis passes that can run in parallel. Produces a report with per-finding line references and a metrics baseline.
 
 ### `/type-safety-audit`
 
@@ -281,8 +269,6 @@ Hooks are configured in each plugin's `plugin.json` and activate on install. The
 **`python-uv-guard.py`** blocks bare `python` commands and points at `uv run`, `uv python install`, and `uv add`.
 
 **`ruff-before-add.py`** runs on `git add` and lints the Python files being staged. It auto-fixes unused imports and import ordering, and blocks on what it cannot fix. Rules: E402 imports at top, F401 unused imports, F841 unused variables, I001 import sorting, plus function-level and class-level inline imports caught by the `no-inline-imports.yml` ast-grep rule. Requires `uv tool install ruff` and `uv tool install ast-grep-cli`.
-
-**`skill-detector.py`** scans your prompt and injects a reminder to load the matching skill: `pyproject.toml` loads `uv-pyproject`, dbt commands load `dbt-python-integration`, pytest and fixtures load `python-test-quality`, test audit requests load `test-review`, type safety requests load `type-safety-audit`, Dagster work loads `writing-dagster-pipelines`, and general Python work loads `python-best-practices`.
 
 ### git-conventions
 

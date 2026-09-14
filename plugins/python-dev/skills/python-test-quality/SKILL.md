@@ -21,7 +21,7 @@ Tests verify **invariants**, not the existence of bugs. Write tests that describ
 
 **Manual trigger:** `/python-test-quality` for test review
 
-**TDD workflow:** When user requests "test-driven development" or "TDD", load @tdd-workflow.md for the full RED-GREEN-REFACTOR cycle with feature planning.
+**TDD workflow:** When the user requests test-driven development or TDD, use `superpowers:test-driven-development` for the RED-GREEN-REFACTOR cycle.
 
 ## Pre-Flight Checklist
 

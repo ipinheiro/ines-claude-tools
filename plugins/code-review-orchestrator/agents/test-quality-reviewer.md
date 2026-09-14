@@ -44,47 +44,7 @@ Before reporting any issue, assess your confidence:
 
 ## Classification Framework
 
-For every test function, assign one verdict:
-
-| Verdict | Meaning | Action |
-|---------|---------|--------|
-| **Keeper** | Tests real business logic or an important edge case | Leave it |
-| **Tautological** | Asserts something that is always true by construction | Recommend removal |
-| **Framework test** | Tests that a library/stdlib works, not your code | Recommend removal |
-| **Redundant** | Another test already covers this behaviour | Recommend removal, cite the covering test |
-| **Weak** | Tests real logic but assertions are too loose | Recommend strengthening |
-| **Missing** | A gap identified by reading the source code | Recommend adding |
-
-### Tautological Test Signals
-
-- Asserts the return type of a well-typed function
-- Asserts a variable equals the value it was just assigned
-- Asserts `result is not None` when the function doesn't return Optional
-- Asserts a Pydantic field is `None` when the default is `None` and no value was provided
-- Missing `assert` keyword — comparison evaluates but result is discarded
-
-### Framework Test Signals
-
-- Assertion would still pass if the function body were replaced with a direct library call
-- Tests that `StrEnum` values equal their names
-- Tests that `raise CustomError()` raises `CustomError`
-- Tests that `json.dumps` serializes standard types correctly through a custom encoder
-- Tests that SHA-256 is deterministic
-- Tests that Pydantic stores constructor arguments
-
-### Redundant Test Signals
-
-- Two tests call the same function with the same inputs and assert overlapping properties
-- A `len` check followed by an indexed content check
-- `isinstance` check before accessing attributes that would raise if the type were wrong
-- Multiple parametrized cases covering the same code path
-
-### Weak Test Signals
-
-- Asserts `is not None` on a mock configured to return non-None
-- Asserts `len(result) > 0` when the mock returns a hardcoded list
-- Uses `or` in assertions — neither branch is enforced
-- Two different configurations with identical assertions
+The verdicts (Keeper, Tautological, Framework test, Redundant, Weak, Missing), the signals for each, and the worked examples come from the preloaded `test-review` skill. Apply them as written there. This file adds only the calibration rules above and the output format below.
 
 ## Output Format
 
