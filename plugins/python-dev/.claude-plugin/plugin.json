@@ -1,6 +1,6 @@
 {
   "name": "python-dev",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Python development skills including best practices, FastAPI patterns, testing, type safety auditing, dbt integration, Dagster pipelines",
   "author": {
     "name": "Inês Pinheiro, Kit Thwaite"

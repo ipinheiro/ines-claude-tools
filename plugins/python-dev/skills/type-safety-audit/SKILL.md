@@ -16,7 +16,7 @@ If no scope is provided, ask the user which directories to audit.
 
 ## The Rule
 
-**Audit only, never fix.** This skill produces a report. Code changes are a separate step using `fixing-type-errors` or `executing-plans`.
+**Audit only, never fix.** This skill produces a report. Code changes are a separate step using `fixing-type-errors` or `executing-phased-plans`.
 
 ## Workflow
 
@@ -328,4 +328,4 @@ After writing the report, present a concise summary to the user:
 - Total findings per category
 - Top 5 highest-impact findings
 - Link to the full report file
-- Suggested next steps (use `fixing-type-errors` skill, use `executing-plans` skill to batch the fix branches)
+- Suggested next steps (use `fixing-type-errors` skill, use `executing-phased-plans` skill to batch the fix branches)

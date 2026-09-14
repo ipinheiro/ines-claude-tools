@@ -2,7 +2,7 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugins-blueviolet?logo=anthropic&logoColor=white)
 ![Plugins](https://img.shields.io/badge/plugins-8-blue)
-![Skills](https://img.shields.io/badge/skills-24-green)
+![Skills](https://img.shields.io/badge/skills-20-green)
 ![Commands](https://img.shields.io/badge/commands-6-orange)
 ![Agents](https://img.shields.io/badge/agents-17-red)
 ![Pine tree approved](https://img.shields.io/badge/%F0%9F%8C%B2-approved-2ea44f)
@@ -43,15 +43,15 @@ Documentation is not vendored here. Component schemas change often, so `CLAUDE.m
 
 ## How this relates to Superpowers
 
-Several skills here have a same-named counterpart in Anthropic's [Superpowers](https://code.claude.com/docs/en/discover-plugins) plugin: planning, executing plans, worktrees, TDD, receiving review feedback. Those built-ins are good, and this marketplace does not try to replace them.
+Several skills here layer on a counterpart in Anthropic's [Superpowers](https://code.claude.com/docs/en/discover-plugins) plugin: planning, executing plans, TDD, receiving review feedback. Each layer carries its own name (`writing-phased-plans`, not `writing-plans`) so it never competes with the built-in for the same bare name. Those built-ins are good, and this marketplace does not try to replace them.
 
 **The rule is: defer to the built-in for the general discipline, add only what is specific to how I work.** When both are installed, both load, so anything restated here is duplicated context at best. Worse, when the two disagree, Claude gets contradictory instructions and picks one arbitrarily.
 
 What earns its place:
 
-- **A different artefact shape.** `writing-plans` defers to `superpowers:writing-plans` for what a task looks like, then changes one thing: plans are a directory of phase files rather than a single document, because our work spans sessions and a phase boundary is a natural place to stop, commit, and resume.
+- **A different artefact shape.** `writing-phased-plans` defers to `superpowers:writing-plans` for what a task looks like, then changes one thing: plans are a directory of phase files rather than a single document, because our work spans sessions and a phase boundary is a natural place to stop, commit, and resume.
 - **Stack knowledge the built-in cannot have.** `verifying-python-review-feedback` leaves the review discipline to Superpowers and covers only what a reviewer gets wrong about *our* stack: whether a suggested library survives the Snowflake connector, whether a validation is load-bearing given where the data originates.
-- **Steps the built-in skips.** `executing-plans` keeps a mandatory pre-flight (worktree, green baseline, load the stack skills, scan for parallel work) that Superpowers has no equivalent of, because its own version defers to `subagent-driven-development` instead.
+- **Steps the built-in skips.** `executing-phased-plans` keeps a mandatory pre-flight (worktree, green baseline, load the stack skills, scan for parallel work) that Superpowers has no equivalent of, because its own version defers to `subagent-driven-development` instead.
 - **Tooling that is ours.** `uv`, dbt, and Snowflake are not general knowledge.
 
 What does not earn its place, and gets deleted when found: a restatement of a built-in's process, a second copy of a rationalization table, or guidance that contradicts a built-in without saying so.
@@ -65,7 +65,7 @@ Everything this marketplace installs, grouped by plugin. Versions come from each
 ```
 ines-claude-tools/                          marketplace: ines-claude-tools
 │
-├── python-dev                     v1.0.0   9 skills · 7 agents · 3 hooks
+├── python-dev                     v1.0.1   9 skills · 7 agents · 3 hooks
 │   ├── skills/
 │   │   ├── python-best-practices           typing, Pydantic, error handling, match dispatch
 │   │   ├── fixing-type-errors              resolve pyright/ty/mypy errors without suppressions
@@ -90,7 +90,7 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │       │   └── no-inline-imports.yml       ast-grep rule used by the above
 │       └── skill-detector.py               UserPromptSubmit: injects skill reminders
 │
-├── code-review-orchestrator       v1.0.0   3 commands · 1 skill · 10 agents
+├── code-review-orchestrator       v1.0.1   3 commands · 1 skill · 10 agents
 │   ├── commands/
 │   │   ├── deep-review                     review uncommitted, staged, or branch changes
 │   │   ├── mr-review                       GitLab MR review producing pasteable comments
@@ -115,19 +115,15 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │       ├── branch-report                   stale branch detection and cleanup commands
 │       └── handoff                         write HANDOFF.md for a fresh session
 │
-├── workflow-skills                v1.0.0   5 skills
+├── workflow-skills                v2.0.0   3 skills
 │   └── skills/
-│       ├── writing-plans                   turn a spec into a step-by-step plan
-│       ├── executing-plans                 batch execution with verification checkpoints
-│       ├── test-driven-development         TDD plus feature planning and living notes
-│       ├── using-git-worktrees             isolated workspaces for feature work
-│       └── finishing-a-development-branch  verify, then merge or open an MR
+│       ├── writing-phased-plans            spec becomes a directory of phase files
+│       ├── executing-phased-plans          pre-flight, then batch execution with checkpoints
+│       └── tdd-with-living-docs            TDD plus feature planning and living notes
 │
-├── productivity-skills            v2.0.0   6 skills
+├── productivity-skills            v3.0.0   4 skills
 │   └── skills/
-│       ├── brainstorming                   design before code
 │       ├── design-doc                      structured technical design documents
-│       ├── dispatching-parallel-agents     2+ independent tasks in parallel
 │       ├── github-issue-search             find known issues and workarounds
 │       ├── writing-clearly                 sentence craft for any prose: docs, commits, posts
 │       └── writing-confluence-docs         house style for the team wiki: grammar, spelling, voice, formatting
@@ -256,24 +252,24 @@ Dispatches the seven auditor agents in parallel and writes `docs/reviews/type-sa
 | P5 | Environment coupling that complicates CI/CD |
 | P6 | Brittle path construction that breaks on restructure |
 
-Take the report into `fixing-type-errors` to implement fixes by priority, then `executing-plans` to batch them into branches.
+Take the report into `fixing-type-errors` to implement fixes by priority, then `executing-phased-plans` to batch them into branches.
 
 ## Skill workflow
 
 The workflow skills are built to chain:
 
 ```
-brainstorming            design before code
+superpowers:brainstorming        design before code
      ↓
-writing-plans            spec becomes a step-by-step plan
+writing-phased-plans             spec becomes a directory of phase files
      ↓
-using-git-worktrees      isolated workspace
+superpowers:using-git-worktrees  isolated workspace
      ↓
-executing-plans          implement with verification checkpoints
+executing-phased-plans           pre-flight, then implement with checkpoints
      ↓
-deep-review / mr-review  multi-agent review of the diff
+deep-review / mr-review          multi-agent review of the diff
      ↓
-finishing-a-development-branch
+superpowers:finishing-a-development-branch
 ```
 
 ## Hooks

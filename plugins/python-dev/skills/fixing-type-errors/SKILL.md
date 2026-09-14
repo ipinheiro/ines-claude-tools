@@ -567,7 +567,7 @@ If a type-safety-audit report exists in `~/docs/reviews/<repo-name>/`, read the 
 
 Use the report's priority matrix to decide fix order and its suggested types as starting points. The report is audit-only — this skill does the actual fixing.
 
-### During `executing-plans`
+### During `executing-phased-plans`
 
 If type errors appear while implementing:
 1. Stop the current task
