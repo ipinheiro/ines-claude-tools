@@ -38,7 +38,7 @@
     {
       "name": "productivity-skills",
       "description": "Productivity skills for design docs, issue search, Confluence documentation, and clear prose",
-      "version": "3.0.0",
+      "version": "3.1.0",
       "author": {
         "name": "Inês Pinheiro"
       },

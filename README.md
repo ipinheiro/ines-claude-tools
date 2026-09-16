@@ -2,7 +2,7 @@
 
 ![Claude Code](https://img.shields.io/badge/Claude_Code-plugins-blueviolet?logo=anthropic&logoColor=white)
 ![Plugins](https://img.shields.io/badge/plugins-8-blue)
-![Skills](https://img.shields.io/badge/skills-19-green)
+![Skills](https://img.shields.io/badge/skills-20-green)
 ![Commands](https://img.shields.io/badge/commands-5-orange)
 ![Agents](https://img.shields.io/badge/agents-17-red)
 ![Pine tree approved](https://img.shields.io/badge/%F0%9F%8C%B2-approved-2ea44f)
@@ -118,9 +118,10 @@ ines-claude-tools/                          marketplace: ines-claude-tools
 │       ├── writing-phased-plans            spec becomes a directory of phase files
 │       └── executing-phased-plans          pre-flight, then batch execution with checkpoints
 │
-├── productivity-skills            v3.0.0   4 skills
+├── productivity-skills            v3.1.0   5 skills
 │   └── skills/
 │       ├── design-doc                      structured technical design documents
+│       ├── drafting-pull-requests          title and three-question description for a PR or MR
 │       ├── github-issue-search             find known issues and workarounds
 │       ├── writing-clearly                 sentence craft for any prose: docs, commits, posts
 │       └── writing-confluence-docs         house style for the team wiki: grammar, spelling, voice, formatting
